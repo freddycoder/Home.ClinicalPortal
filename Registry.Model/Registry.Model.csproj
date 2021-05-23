@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SoapCore" Version="1.1.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="message-builder-core">
+      <HintPath>..\..\message-builder-dotnet\message-builder-core\bin\Debug\netstandard2.0\message-builder-core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="message-builder-util">
+      <HintPath>..\..\message-builder-dotnet\message-builder-util\bin\Debug\netstandard2.0\message-builder-util.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="message-builder-compatibility">
+      <HintPath>..\..\message-builder-dotnet\message-builder-compatibility\bin\Debug\netstandard2.0\message-builder-compatibility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="message-builder-release-r02_04_03">
+      <HintPath>..\..\message-builder-dotnet\message-builder-release-r02_04_03\bin\Debug\netstandard2.0\message-builder-release-r02_04_03.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+</Project>
