@@ -4,7 +4,7 @@ My implementation of some HL7v3 soap services, educational purpose.
 
 ### Framework used
 
-- dotnet core 3.1
+- dotnet core 3.1, .net 5.0
 - SoapCore
 - message-builder-dotnet
 - Azure API for FHIR
@@ -12,11 +12,16 @@ My implementation of some HL7v3 soap services, educational purpose.
 
 ## Setup the environment
 
+Duration somewhere between 30 minutes and 2 hours. 
+Required an azure subscription and docker installed on your computer.
+
 To setup the environment, beside the folder of this repo, you should also clone two others repos.
+
+You can see a demo on youtube : https://www.youtube.com/watch?v=5vS7Iq9vpXE
 
 ```
 git clone https://github.com/microsoft/fhir-server-samples.git
-git clone https://github.com/microsoft/fhir-server-samples
+git clone https://github.com/microsoft/health-architectures.git
 ```
 
 Follow the steps describe here : https://github.com/microsoft/fhir-server-samples#prerequisites
@@ -27,7 +32,7 @@ Docker command to generate test data for the solution :
 docker run --rm -v ${PWD}/output:/output --name synthea-docker intersystemsdc/irisdemo-base-synthea:version-1.3.4 -p 25
 ```
 
-You can see a demo on youtube : https://www.youtube.com/watch?v=5vS7Iq9vpXE
+Upload the json into the import folder of the azure storage created by the deployment.
 
 ## Once the environment is deployed
 
