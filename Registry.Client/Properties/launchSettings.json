@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "NetCoreConsoleApp": {
+    "Registry.Client": {
       "commandName": "Project"
     },
     "Docker": {

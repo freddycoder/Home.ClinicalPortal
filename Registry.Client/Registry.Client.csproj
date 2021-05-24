@@ -15,37 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-alpha" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-alpha" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-alpha" />
+    <!--<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />-->
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Registry.Model\Registry.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="message-builder-core">
-      <HintPath>..\..\message-builder-dotnet\message-builder-core\bin\Debug\netstandard2.0\message-builder-core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="message-builder-util">
-      <HintPath>..\..\message-builder-dotnet\message-builder-util\bin\Debug\netstandard2.0\message-builder-util.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="message-builder-compatibility">
-      <HintPath>..\..\message-builder-dotnet\message-builder-compatibility\bin\Debug\netstandard2.0\message-builder-compatibility.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="message-builder-release-r02_04_03">
-      <HintPath>..\..\message-builder-dotnet\message-builder-release-r02_04_03\bin\Debug\netstandard2.0\message-builder-release-r02_04_03.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
