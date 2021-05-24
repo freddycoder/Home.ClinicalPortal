@@ -1,8 +1,9 @@
 ﻿using Ca.Infoway.Messagebuilder.Model.Pcs_mr2009_r02_04_03.Interaction;
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
-namespace FindCandidate.Model
+namespace Home.ClinicalPortal.Model.Registry
 {
     [ServiceContract]
     public interface IPatientRegistry
@@ -14,7 +15,7 @@ namespace FindCandidate.Model
         string GetDemographics(string request);
 
         [OperationContract]
-        string FindCandidates(string request);
+        Task<string> FindCandidates(string request);
 
         [OperationContract]
         string RecordRevised(string request);

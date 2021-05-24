@@ -1,10 +1,12 @@
+using Laboratory;
+using Laboratory.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO;
 
-namespace Registry
+namespace Laboratory
 {
     public class Program
     {
@@ -20,6 +22,12 @@ namespace Registry
 					x.AddConsole();
 				})
 				.Build();
+
+			var db = host.Services.GetRequiredService<LaboratoryDbContext>();
+
+			db.Patients.Add(new ResultEntity { });
+
+			db.SaveChanges();
 
 			host.Run();
 		}

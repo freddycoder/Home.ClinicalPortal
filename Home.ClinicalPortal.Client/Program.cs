@@ -13,19 +13,25 @@ using Ca.Infoway.Messagebuilder.Marshalling.HL7;
 using Ca.Infoway.Messagebuilder.Error;
 using Ca.Infoway.Messagebuilder.Codesystem;
 using System.ServiceModel;
-using FindCandidate.Model;
 using Ca.Infoway.Messagebuilder.Domainvalue.Transport;
+using Home.ClinicalPortal;
+using Home.ClinicalPortal.Model.Registry;
+using Home.ClinicalPortal.Model.Laboratory;
+using System.Threading.Tasks;
 
 namespace NetCoreConsoleApp
 {
     class Program
     {
-        static void Main()
+        static Task Main()
         {
-            HomeClinicalPortal();
+            return HomeClinicalPortal();
         }
 
-        static void HomeClinicalPortal()
+        static string RegistryProtocol = "http";
+        static int RegistryPort = 49154;
+
+        static async Task HomeClinicalPortal()
         {
             int choice;
             do
@@ -33,11 +39,12 @@ namespace NetCoreConsoleApp
                 Console.WriteLine("##########################################");
                 Console.WriteLine("#            Home.ClinicalProtal         #");
                 Console.WriteLine("##########################################");
-
-
                 Console.WriteLine("#                                        #");
-                Console.WriteLine("# 1. AddPerson                           #");
-                Console.WriteLine("# 2. FindCandidate                       #");
+                Console.WriteLine("# 1.   AddPerson                         #");
+                Console.WriteLine("# 2.   FindCandidate                     #");
+                Console.WriteLine("# 3.   QueryLaboratoryResults            #");
+                Console.WriteLine("# 100. Options                           #");
+                Console.WriteLine("# 0.   Quit                              #");
                 Console.WriteLine("#                                        #");
                 Console.Write("# Your choice : ");
 
@@ -52,7 +59,13 @@ namespace NetCoreConsoleApp
                         case 1:
                             throw new NotImplementedException();
                         case 2:
-                            FindCandidateScenario();
+                            await FindCandidateScenario();
+                            break;
+                        case 3:
+                            QueryLaboratoryResults();
+                            break;
+                        case 100:
+                            MenuOption();
                             break;
                         default:
                             throw new NotImplementedException();
@@ -75,7 +88,22 @@ namespace NetCoreConsoleApp
             } while (choice != 0);
         }
 
-        private static void FindCandidateScenario()
+        private static void QueryLaboratoryResults()
+        {
+            var binding = new BasicHttpBinding();
+            var endpoint = new EndpointAddress(new Uri("http://localhost:49158/Laboratory/Results.svc"));
+            var channelFactory = new ChannelFactory<ILaboratory>(binding, endpoint);
+            var serviceClient = channelFactory.CreateChannel();
+            var reponseString = serviceClient.QueryResults("");
+            Console.WriteLine(reponseString);
+        }
+
+        private static void MenuOption()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task FindCandidateScenario()
         {
             // the HL7v3 version to target
             SpecificationVersion version = SpecificationVersion.R02_04_03;
@@ -131,25 +159,57 @@ namespace NetCoreConsoleApp
             queryByParameter.ParameterList = parameterList;
 
             // setting values on the payload
-            PersonName name = PersonName.CreateFirstNameLastName("Frédéric", "Jacques");
+            PersonName name = PersonName.CreateFirstNameLastName(AskFirstName(), AskLastName());
             parameterList.PersonNameValue.Add(name);
-            parameterList.AdministrativeGenderValue = AdministrativeGender.MALE;
 
             // alternative way to create a code object via direct lookup
             Ca.Infoway.Messagebuilder.Domainvalue.AdministrativeGender codeLookup =
                 CodeResolverRegistry.Lookup<AdministrativeGender>(
-                "M", CodeSystem.VOCABULARY_ADMINISTRATIVE_GENDER.Root);
+                AskGender(), CodeSystem.VOCABULARY_ADMINISTRATIVE_GENDER.Root);
 
             parameterList.AdministrativeGenderValue = codeLookup;
 
+            parameterList.PersonBirthtimeValue = AskBirthdate();
+
             var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(new Uri("http://localhost:5050/Registry/PatientRegistry.svc"));
+            var endpoint = new EndpointAddress(new Uri($"{RegistryProtocol}://localhost:{RegistryPort}/Registry/PatientRegistry.svc"));
             var channelFactory = new ChannelFactory<IPatientRegistry>(binding, endpoint);
             var serviceClient = channelFactory.CreateChannel();
-            var reponseString = serviceClient.FindCandidates(HL7Serializer.Serialize(RenderMode.PERMISSIVE, version, findCandidateQuery));
+            var reponseString = await serviceClient.FindCandidates(HL7Serializer.Serialize(RenderMode.PERMISSIVE, version, findCandidateQuery));
             Console.WriteLine(reponseString);
             var findCandidateResponse = HL7Serializer.Deserialize<FindCandidatesResponse>(RenderMode.PERMISSIVE, version, reponseString);
             Console.WriteLine(findCandidateResponse.ToString());
+        }
+
+        private static string AskLastName()
+        {
+            Console.Write("Enter the last name of the patient : ");
+            return Console.ReadLine();
+        }
+
+        private static string AskFirstName()
+        {
+            Console.Write("Enter the first name of the patient : ");
+            return Console.ReadLine();
+        }
+
+        private static string AskGender()
+        {
+            Console.Write("Enter the gender of the patient : ");
+            return Console.ReadLine();
+        }
+
+        private static PlatformDate AskBirthdate()
+        {
+            Console.Write("Enter the birthdate of the patient : ");
+            string input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return null;
+            }
+
+            return new PlatformDate(DateTime.Parse(input));
         }
     }
 }

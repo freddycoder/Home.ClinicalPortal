@@ -2,7 +2,7 @@
 using System;
 using System.ServiceModel;
 
-namespace FindCandidate.Model
+namespace Home.ClinicalPortal.Model.Registry
 {
     [ServiceContract]
     public interface IPersonRegistry

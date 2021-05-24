@@ -16,9 +16,9 @@
 
   <ItemGroup>
     <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-alpha" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Message.Builder.Ccda.R1_1" Version="1.0.0-alpha" />
     <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-alpha" />
     <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-alpha" />
-    <PackageReference Include="Hl7.Fhir.R4" Version="3.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
@@ -28,10 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\health-architectures\FHIR\FHIRProxy\FHIRProxy\FHIRProxy.csproj" />
     <ProjectReference Include="..\Home.ClinicalPortal.Model\Home.ClinicalPortal.Model.csproj" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

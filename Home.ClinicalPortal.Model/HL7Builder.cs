@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FindCandidate.Model
+namespace Home.ClinicalPortal
 {
     public static class HL7Builder
     {

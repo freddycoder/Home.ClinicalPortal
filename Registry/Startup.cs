@@ -1,14 +1,15 @@
-using FindCandidate.Data;
-using FindCandidate.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MyHL7.Contract;
+using Registry.Contract;
 using SoapCore;
 using System.ServiceModel;
+using Home.ClinicalPortal.Model.Registry;
+using FHIRProxy;
+using System;
 
-namespace MyHL7
+namespace Registry
 {
     public class Startup
     {
@@ -17,10 +18,13 @@ namespace MyHL7
 			services.TryAddSingleton<IPatientRegistry, PatientRegistryContract>();
 			services.AddMvc(x => x.EnableEndpointRouting = false);
 			services.AddSoapCore();
-			services.AddDbContext<FindCandidateDbContext>(o =>
-			{
-				o.UseInMemoryDatabase("FindCandidateInMemory");
-			});
+			services.AddScoped(sp => new FHIRClient(baseurl: Environment.GetEnvironmentVariable("FHIR_API_URL"),
+													bearerToken: Environment.GetEnvironmentVariable("FHIR_BEARER_TOKEN")));
+			//services.AddScoped(sp => new FHIRClient(baseurl: Environment.GetEnvironmentVariable("FHIR_API_URL"),
+			//									    tenent: Environment.GetEnvironmentVariable("TENENT_ID"),
+			//										clientid: Environment.GetEnvironmentVariable("CLIENT_ID"),
+			//										resource: Environment.GetEnvironmentVariable("FHIR_API_URL"),
+			//										secret: Environment.GetEnvironmentVariable("FHIR_CLIENT_CREDENTIAL")));
 		}
 
 		public void Configure(IApplicationBuilder app)

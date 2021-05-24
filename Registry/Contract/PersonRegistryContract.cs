@@ -1,4 +1,4 @@
-﻿using FindCandidate.Model;
+﻿using Home.ClinicalPortal.Model.Registry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
