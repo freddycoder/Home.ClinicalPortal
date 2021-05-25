@@ -1,0 +1,75 @@
+﻿@page "/metadata"
+
+@inject IMemoryCache Cache;
+
+<h1>Fhir operations</h1>
+
+@if (components == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Interaction</th>
+                <th>Profile</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var operation in components)
+            {
+                var resource = operation.Type;
+
+                <tr>
+                    <td><a href="/@operation.Type">@operation.Type</a></td>
+                    <td>@RenderInteractions(operation.Interaction)</td>
+                    <td><a href="@operation.Profile">@operation.Profile</a></td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => ShowOperationDetails(resource)">Details</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter] 
+    public IModalService Modal { get; set; }
+
+    private List<CapabilityStatement.ResourceComponent> components;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        components = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement)).Rest[0].Resource;
+    }
+
+    private void ShowOperationDetails(ResourceType? type)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(OperationDetails.Component), components.First(c => c.Type == type));
+
+        Modal.Show<OperationDetails>($"{type} - Operations details", parameters);
+    }
+
+    private string RenderInteractions(List<CapabilityStatement.ResourceInteractionComponent> components)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < components.Count; i++)
+        {
+            sb.Append(components[i].Code.Value);
+
+            if (i < components.Count - 1)
+            {
+                sb.Append(" | ");
+            }
+        }
+
+        return sb.ToString();
+    }
+}

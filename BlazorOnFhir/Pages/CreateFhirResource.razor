@@ -1,0 +1,56 @@
+﻿@page "/{FhirResourceType}/Create"
+@inject FHIRProxy.FHIRClient FhirClient
+@inject FhirJsonSerializer Serializer
+@inject IMemoryCache Cache
+
+<h3>Create @FhirResourceType</h3>
+
+<div class="form-group">
+    <label class="form-text">Edit your json</label>
+    <textarea class="input-group-text input-group-lg" @bind="json"></textarea>
+    <button class="btn btn-primary" @onclick="async () => await CreateFromJson()">Create</button>
+</div>
+
+@if (responseJson != null)
+{
+    <h4>Server response</h4>
+    <div class="text">
+        <pre>
+            @responseJson
+        </pre>
+    </div>
+}
+
+<a href="/@FhirResourceType">Resource page</a>
+
+@code {
+    [Parameter]
+    public string FhirResourceType { get; set; }
+
+    public string json { get; set; }
+
+    public string responseJson { get; set; }
+
+    protected override System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var assembly = typeof(Patient).Assembly;
+
+        var type = assembly.GetTypes().FirstOrDefault(t => t.FullName == $"Hl7.Fhir.Model.{FhirResourceType}");
+
+        var obj = System.Activator.CreateInstance(type);
+
+        var @base = obj as Base;
+
+        json = Serializer.SerializeToString(@base);
+
+        return System.Threading.Tasks.Task.CompletedTask;
+    }
+
+    public async System.Threading.Tasks.Task CreateFromJson()
+    {
+        var response = await FhirClient
+            .PostCommand(FhirResourceType, json, "", new Microsoft.AspNetCore.Http.HeaderDictionary());
+
+        responseJson = response.Content.ToString();
+    }
+}

@@ -1,0 +1,134 @@
+﻿@page "/{FhirResourceType}"
+@inject FHIRProxy.FHIRClient FhirClient
+@inject FhirJsonParser Parser
+@inject IMemoryCache Cache
+
+<h3>@FhirResourceType</h3>
+
+<div class="row">
+    @{ 
+        if (CanCreate)
+        {
+            <a href="/@FhirResourceType/Create" class="btn btn-primary m-3">Create</a>
+        }
+    }
+</div>
+
+@if (Bundle?.Type == Bundle.BundleType.Searchset)
+{
+    <div class="row">
+        @if (Previous != null && Previous.Any())
+        {
+            <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
+        }
+        @if (Next != null)
+        {
+            <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
+        }
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Json</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Bundle.Entry)
+                {
+                    <tr>
+                        <td>
+                            <pre class="text">
+                                @entry.Resource.ToJson(FhirJsonSettings)
+                            </pre>
+                        </td>
+                        <td>
+                            <a href="/@FhirResourceType/@entry.Resource.Id" class="btn btn-secondary">Details</a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <pre class="text">
+        @json
+    </pre>
+}
+
+@code {
+    [Parameter]
+    public string FhirResourceType { get; set; }
+
+    public string json { get; set; }
+
+    public LinkedList<string> Previous { get; set; }
+
+    public string Next { get; set; }
+
+    public bool CanCreate { get; set; }
+
+    public Bundle Bundle { get; set; }
+
+    public CapabilityStatement.ResourceComponent ResourceComponent { get; set; }
+
+    private FhirJsonSerializationSettings FhirJsonSettings = new FhirJsonSerializationSettings
+    {
+        Pretty = true,
+        IgnoreUnknownElements = true
+    };
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        Previous = new LinkedList<string>();
+
+        FHIRProxy.FHIRResponse response = await FhirClient.LoadResource(FhirResourceType);
+
+        TryProcessResponse(response);
+
+        var capabilities = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement));
+
+        ResourceComponent = capabilities.Rest.Single().Resource.First(r => r.Type.ToString() == FhirResourceType);
+
+        CanCreate = ResourceComponent.Interaction.Any(i => i.Code.Value == CapabilityStatement.TypeRestfulInteraction.Create);
+    }
+
+    private async System.Threading.Tasks.Task Refresh(string urlString)
+    {
+        if (urlString == Next)
+        {
+            Previous.AddLast(Bundle.Link.First(l => l.Relation == "self").Url);
+        }
+        else
+        {
+            Previous.RemoveLast();
+        }
+
+        var url = new Uri(urlString);
+
+        var response = await FhirClient.LoadResource(url.PathAndQuery);
+
+        TryProcessResponse(response);
+
+        StateHasChanged();
+    }
+
+    private void TryProcessResponse(FHIRProxy.FHIRResponse response)
+    {
+        try
+        {
+            json = response.Content.ToString();
+
+            Bundle = Parser.Parse<Bundle>(response.Content.ToString());
+
+            Next = Bundle.Link?.FirstOrDefault(l => l.Relation == "next")?.Url;
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+}

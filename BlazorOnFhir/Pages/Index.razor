@@ -1,0 +1,18 @@
+@page "/"
+@inject HttpClientConfig clientConfig
+
+<h1>Blazor on Fhir!</h1>
+
+A blazor app to interact with Fhir API.
+
+<div class="row">
+    <div class="form-group">
+        <h3>Enter your url</h3>
+
+        <input @bind="clientConfig.Url" class="input-group" />
+
+        <h3>Enter your bearer token</h3>
+
+        <input @bind="clientConfig.BearerToken" class="input-group-text" />
+    </div>
+</div>

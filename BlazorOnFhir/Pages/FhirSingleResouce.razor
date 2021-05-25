@@ -1,0 +1,30 @@
+﻿@page "/{FhirResourceType}/{FhirResourceId}"
+@inject FHIRProxy.FHIRClient FhirClient
+@inject FhirJsonParser Parser
+
+<h3>@FhirResourceType @FhirResourceId</h3>
+
+<div class="text">
+    <pre>
+        @json
+    </pre>
+</div>
+
+<a href="/@FhirResourceType">Resource page</a>
+
+@code {
+    [Parameter]
+    public string FhirResourceType { get; set; }
+
+    [Parameter]
+    public string FhirResourceId { get; set; }
+
+    public string json { get; set; }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        FHIRProxy.FHIRResponse response = await FhirClient.LoadResource(FhirResourceType + "/" + FhirResourceId);
+
+        json = response.Content.ToString();
+    }
+}

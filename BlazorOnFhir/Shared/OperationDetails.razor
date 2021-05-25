@@ -1,0 +1,49 @@
+﻿@inject HtmlSanitizer HtmlSanitizer 
+<div class="container">
+    <div class="row">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var parameter in Component.SearchParam)
+                {
+                    <tr>
+                        <td>@parameter.Name</td>
+                        <td>@ConvertStringToMarkupString(parameter.Documentation.Value)</td>
+                        <td><a href="@parameter.Definition">@parameter.Definition</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public CapabilityStatement.ResourceComponent Component { get; set; }
+
+    private MarkupString ConvertStringToMarkupString(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            // Convert markdown string to HTML
+            var html = Markdig.Markdown.ToHtml(value, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build());
+
+            // Sanitize HTML before rendering
+            var sanitizedHtml = HtmlSanitizer.Sanitize(html);
+
+            // Return sanitized HTML as a MarkupString that Blazor can render
+            return new MarkupString(sanitizedHtml);
+        }
+
+        return new MarkupString();
+    }
+}
