@@ -14,8 +14,4 @@
     <ProjectReference Include="..\..\health-architectures\FHIR\FHIRProxy\FHIRProxy\FHIRProxy.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
