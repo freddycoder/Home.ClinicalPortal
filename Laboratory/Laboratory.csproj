@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\health-architectures\FHIR\FHIRProxy\FHIRProxy\FHIRProxy.csproj" />
     <ProjectReference Include="..\Home.ClinicalPortal.Model\Home.ClinicalPortal.Model.csproj" />
   </ItemGroup>
 

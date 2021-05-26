@@ -7,7 +7,7 @@
 
 <div class="form-group">
     <label class="form-text">Edit your json</label>
-    <textarea class="input-group-text input-group-lg" @bind="json"></textarea>
+    <textarea class="input-group-text" @bind="json"></textarea>
     <button class="btn btn-primary" @onclick="async () => await CreateFromJson()">Create</button>
 </div>
 
@@ -39,7 +39,13 @@
 
         var obj = System.Activator.CreateInstance(type);
 
+        var capabilities = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement));
+
+        var resourceComponent = capabilities.Rest.Single().Resource.First(r => r.Type.ToString() == FhirResourceType);
+
         var @base = obj as Base;
+
+        EnhanceJson(@base);
 
         json = Serializer.SerializeToString(@base);
 
@@ -48,9 +54,47 @@
 
     public async System.Threading.Tasks.Task CreateFromJson()
     {
-        var response = await FhirClient
-            .PostCommand(FhirResourceType, json, "", new Microsoft.AspNetCore.Http.HeaderDictionary());
+        var headers = new Microsoft.AspNetCore.Http.HeaderDictionary();
+
+        headers.Add("Content-Type", "application/json");
+
+        var response = await FhirClient.PostCommand(FhirResourceType, json, "", headers);
 
         responseJson = response.Content.ToString();
+    }
+
+
+    public void EnhanceJson(Base @base)
+    {
+        var type = @base.GetType();
+
+        foreach (var property in type.GetProperties().Where(p => p.CanWrite))
+        {
+            if (property.PropertyType == typeof(string))
+            {
+                property.SetValue(@base, string.Empty);
+            }
+            else if (property.PropertyType == typeof(Uri))
+            {
+                property.SetValue(@base, default);
+            }
+            else if (property.PropertyType.IsClass && property.PropertyType.IsAbstract == false)
+            {
+                property.SetValue(@base, Activator.CreateInstance(property.PropertyType));
+
+                //if (property.PropertyType.GetInterfaces().Any(i => i.Name == "IList"))
+                //{
+                //    var list = property.GetValue(@base);
+
+                //    property.PropertyType.GetMethod("Add")
+                //        .Invoke(@base,
+                //        new object[] { Activator.CreateInstance(property.PropertyType.GenericTypeArguments.Single()) });
+                //}
+            }
+            else
+            {
+                property.SetValue(@base, default);
+            }
+        }
     }
 }

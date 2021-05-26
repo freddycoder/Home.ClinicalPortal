@@ -53,3 +53,12 @@ a, .btn-link {
     overflow: auto !important;
     max-height: calc(100% - 3.5rem) !important;
 }
+
+textarea {
+    resize: block !important;
+    display: block;
+    height: 500px;
+    width: 800px;
+    white-space: pre-wrap !important;
+    text-align: left !important;
+}

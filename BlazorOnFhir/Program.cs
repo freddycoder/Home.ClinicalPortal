@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
@@ -20,17 +21,32 @@ namespace BlazorOnFhir
 
             using (var scope = host.Services.CreateScope()) 
             {
-                var fhirClient = scope.ServiceProvider.GetRequiredService<FHIRProxy.FHIRClient>();
-
-                var response = await fhirClient.LoadResource("metadata");
-
                 var ser = host.Services.GetRequiredService<Hl7.Fhir.Serialization.FhirJsonParser>();
-
-                var capabilities = ser.Parse<CapabilityStatement>(response.Content.ToString());
 
                 var cache = host.Services.GetRequiredService<IMemoryCache>();
 
-                cache.Set(nameof(CapabilityStatement), capabilities);
+                // Saving the capabilities because it is a little slow to always query the metadata endpoint
+                const string filesave = "capabilities.json";
+
+                if (File.Exists(filesave))
+                {
+                    var capabilities = ser.Parse<CapabilityStatement>(await File.ReadAllTextAsync(filesave));
+
+                    cache.Set(nameof(CapabilityStatement), capabilities);
+                }
+                else
+                {
+                    var fhirClient = scope.ServiceProvider.GetRequiredService<FHIRProxy.FHIRClient>();
+
+                    var response = await fhirClient.LoadResource("metadata");
+
+                    await File.WriteAllTextAsync(filesave, response.Content.ToString());
+
+                    var capabilities = ser.Parse<CapabilityStatement>(response.Content.ToString());
+
+                    cache.Set(nameof(CapabilityStatement), capabilities);
+                }
+                
             }
 
             host.Run();

@@ -6,8 +6,8 @@ using Ca.Infoway.Messagebuilder.Marshalling;
 using Ca.Infoway.Messagebuilder.Model.Ccda_r1_1.Consultationnote;
 using Ca.Infoway.Messagebuilder.Model.Ccda_r1_1.Merged;
 using Ca.Infoway.Messagebuilder.Resolver.Configurator;
+using FHIRProxy;
 using Home.ClinicalPortal.Model.Laboratory;
-using Laboratory.Data;
 using Platform.Xml.Sax;
 using System;
 
@@ -15,9 +15,9 @@ namespace Laboratory.Contract
 {
 	public class LaboratoryContract : ILaboratory
 	{
-        private readonly LaboratoryDbContext context;
+        private readonly FHIRClient context;
 
-        public LaboratoryContract(LaboratoryDbContext context)
+        public LaboratoryContract(FHIRClient context)
         {
             this.context = context;
         }
