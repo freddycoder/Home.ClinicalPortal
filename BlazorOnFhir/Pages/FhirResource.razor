@@ -1,7 +1,7 @@
 ﻿@page "/{FhirResourceType}"
 @inject FHIRProxy.FHIRClient FhirClient
 @inject FhirJsonParser Parser
-@inject IMemoryCache Cache
+@inject IMemoryCache Cache;
 
 <h3>@FhirResourceType</h3>
 
@@ -81,7 +81,7 @@ else
         IgnoreUnknownElements = true
     };
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnParametersSetAsync()
     {
         Previous = new LinkedList<string>();
 

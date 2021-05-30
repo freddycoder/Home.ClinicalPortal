@@ -1,4 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject IMemoryCache Cache
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorOnFhir</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -17,6 +19,27 @@
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Metadata
             </NavLink>
         </li>
+        <li class="nav-item px-3">
+            <div class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" @bind="SearchText" @bind:event="oninput">
+            </div>
+        </li>
+        @foreach (var action in ActionFiltered.Take(8))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="@action.Type">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> @action.Type
+                </NavLink>
+            </li>
+        }
+        @if (ActionFiltered.Count > 8)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="#">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> ...
+                </NavLink>
+            </li>
+        }
     </ul>
 </div>
 
@@ -30,3 +53,57 @@
         collapseNavMenu = !collapseNavMenu;
     }
 }
+
+@code {
+    private string _searchText;
+    public string SearchText
+    {
+        get { return _searchText; }
+        set { _searchText = value; DoSearchText(); }
+    }
+
+    private List<CapabilityStatement.ResourceComponent> _actionFiltered;
+    public List<CapabilityStatement.ResourceComponent> ActionFiltered
+    {
+        get
+        {
+            if (_actionFiltered == null)
+            {
+                DoSearchText();
+            }
+
+            return _actionFiltered;
+        }
+        set
+        {
+            _actionFiltered = value;
+        }
+    }
+
+    public async void DoSearchText()
+    {
+        var filtered = new List<CapabilityStatement.ResourceComponent>();
+
+        var capabilities = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement));
+
+        if (capabilities != null)
+        {
+            if (string.IsNullOrWhiteSpace(_searchText))
+            {
+                filtered.AddRange(capabilities.Rest[0].Resource);
+            }
+            else
+            {
+                foreach (var cap in capabilities.Rest[0].Resource)
+                {
+                    if (cap.Type.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        filtered.Add(cap);
+                    }
+                }
+            }
+        }
+
+        ActionFiltered = filtered;
+    }
+} 

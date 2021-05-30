@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "FhirImporter": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "FhirServerUrl": "http://localhost:8080",
+        "MaxDegreeOfParallelism": "2"
+      }
+    }
+  }
+}

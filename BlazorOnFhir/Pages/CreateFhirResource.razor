@@ -2,6 +2,7 @@
 @inject FHIRProxy.FHIRClient FhirClient
 @inject FhirJsonSerializer Serializer
 @inject IMemoryCache Cache
+@inject FhirJsonExampleService FhirExampleService
 
 <h3>Create @FhirResourceType</h3>
 
@@ -31,25 +32,9 @@
 
     public string responseJson { get; set; }
 
-    protected override System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        var assembly = typeof(Patient).Assembly;
-
-        var type = assembly.GetTypes().FirstOrDefault(t => t.FullName == $"Hl7.Fhir.Model.{FhirResourceType}");
-
-        var obj = System.Activator.CreateInstance(type);
-
-        var capabilities = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement));
-
-        var resourceComponent = capabilities.Rest.Single().Resource.First(r => r.Type.ToString() == FhirResourceType);
-
-        var @base = obj as Base;
-
-        EnhanceJson(@base);
-
-        json = Serializer.SerializeToString(@base);
-
-        return System.Threading.Tasks.Task.CompletedTask;
+        json = await FhirExampleService.GetExample(FhirResourceType);
     }
 
     public async System.Threading.Tasks.Task CreateFromJson()
@@ -61,40 +46,5 @@
         var response = await FhirClient.PostCommand(FhirResourceType, json, "", headers);
 
         responseJson = response.Content.ToString();
-    }
-
-
-    public void EnhanceJson(Base @base)
-    {
-        var type = @base.GetType();
-
-        foreach (var property in type.GetProperties().Where(p => p.CanWrite))
-        {
-            if (property.PropertyType == typeof(string))
-            {
-                property.SetValue(@base, string.Empty);
-            }
-            else if (property.PropertyType == typeof(Uri))
-            {
-                property.SetValue(@base, default);
-            }
-            else if (property.PropertyType.IsClass && property.PropertyType.IsAbstract == false)
-            {
-                property.SetValue(@base, Activator.CreateInstance(property.PropertyType));
-
-                //if (property.PropertyType.GetInterfaces().Any(i => i.Name == "IList"))
-                //{
-                //    var list = property.GetValue(@base);
-
-                //    property.PropertyType.GetMethod("Add")
-                //        .Invoke(@base,
-                //        new object[] { Activator.CreateInstance(property.PropertyType.GenericTypeArguments.Single()) });
-                //}
-            }
-            else
-            {
-                property.SetValue(@base, default);
-            }
-        }
     }
 }

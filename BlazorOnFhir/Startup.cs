@@ -1,15 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Blazored.Modal;
-using BlazorOnFhir;
+using BlazorOnFhir.Services;
 using Ganss.XSS;
-using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,6 +42,7 @@ namespace BlazorOnFhir
                 return new FHIRProxy.FHIRClient(c.Url, c.BearerToken);
             });
             services.AddSingleton(new HtmlSanitizer());
+            services.AddSingleton<FhirJsonExampleService>();
             services.AddMemoryCache();
         }
 
