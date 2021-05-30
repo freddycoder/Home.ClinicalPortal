@@ -16,7 +16,11 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/metadata",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "environmentVariables": {
+        "FHIR_API_URL": "http://host.docker.internal:8080",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

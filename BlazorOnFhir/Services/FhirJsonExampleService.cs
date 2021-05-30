@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -33,7 +31,7 @@ namespace BlazorOnFhir.Services
                 _logger.LogError(e, e.Message);
             }
 
-            return $"Example not found";
+            return $"Example not found\nFind an example on the HL7 Fhir website : http://hl7.org/fhir/R4/{type.ToLower()}-examples.html";
         }
     }
 }

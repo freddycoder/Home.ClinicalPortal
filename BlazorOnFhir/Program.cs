@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorOnFhir
 {
@@ -15,6 +17,10 @@ namespace BlazorOnFhir
 
             using (var scope = host.Services.CreateScope()) 
             {
+                var logger = host.Services.GetRequiredService<ILogger<Program>>();
+
+                logger.LogInformation("Try fetch fhir metadata");
+
                 var ser = host.Services.GetRequiredService<Hl7.Fhir.Serialization.FhirJsonParser>();
 
                 var cache = host.Services.GetRequiredService<IMemoryCache>();
@@ -28,7 +34,7 @@ namespace BlazorOnFhir
 
                     cache.Set(nameof(CapabilityStatement), capabilities);
                 }
-                else
+                else if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FHIR_API_URL")) == false)
                 {
                     var fhirClient = scope.ServiceProvider.GetRequiredService<FHIRProxy.FHIRClient>();
 

@@ -18,6 +18,24 @@
                 <a href="/@FhirResourceType/Create" class="btn btn-primary">Create</a>
             }
         }
+
+        <div style="position: absolute; bottom: 0;">
+            @if (Previous != null && Previous.Any())
+            {
+                <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
+            }
+            else {
+                <button class="btn btn-secondary m-3" disabled>Previous</button>
+            }
+            @if (Next != null)
+            {
+                <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
+            }
+            else {
+                <button class="btn btn-secondary m-3" disabled>Next</button>
+            }
+        </div>
+       
     </div>
 
     @if (Bundle?.Type == Bundle.BundleType.Searchset)
@@ -46,15 +64,6 @@
 @if (Bundle?.Type == Bundle.BundleType.Searchset)
 {
 <div class="row">
-    @if (Previous != null && Previous.Any())
-    {
-        <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
-    }
-    @if (Next != null)
-    {
-        <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
-    }
-
     <table class="table table-striped table-hover table-responsive-md">
         <thead>
             <tr>
