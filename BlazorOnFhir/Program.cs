@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace BlazorOnFhir
 {
@@ -46,7 +40,6 @@ namespace BlazorOnFhir
 
                     cache.Set(nameof(CapabilityStatement), capabilities);
                 }
-                
             }
 
             host.Run();

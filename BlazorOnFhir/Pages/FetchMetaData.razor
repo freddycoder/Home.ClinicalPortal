@@ -4,7 +4,14 @@
 
 <h1>Fhir operations</h1>
 
-@if (components == null)
+<div class="col-4 mt-2">
+    <div class="form-group">
+        <label for="inputsearch">Search</label>
+        <input id="inputSearch" autocomplete="new-password" @bind="SearchText" @bind:event="oninput" type="text" class="form-control" placeholder="Search">
+    </div>
+</div>
+
+@if (Components == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -20,7 +27,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var operation in components)
+            @foreach (var operation in Components)
             {
                 var resource = operation.Type;
 
@@ -38,20 +45,20 @@ else
 }
 
 @code {
-    [CascadingParameter] 
+    [CascadingParameter]
     public IModalService Modal { get; set; }
 
-    private List<CapabilityStatement.ResourceComponent> components;
+    private List<CapabilityStatement.ResourceComponent> Components;
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        components = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement)).Rest[0].Resource;
+        Components = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement)).Rest[0].Resource;
     }
 
     private void ShowOperationDetails(ResourceType? type)
     {
         var parameters = new ModalParameters();
-        parameters.Add(nameof(OperationDetails.Component), components.First(c => c.Type == type));
+        parameters.Add(nameof(OperationDetails.Component), Components.First(c => c.Type == type));
 
         Modal.Show<OperationDetails>($"{type} - Operations details", parameters);
     }
@@ -71,5 +78,39 @@ else
         }
 
         return sb.ToString();
+    }
+
+    private string _searchText;
+    public string SearchText
+    {
+        get { return _searchText; }
+        set { _searchText = value; SearchTextFunction(); }
+    }
+
+    public void SearchTextFunction()
+    {
+        var filtered = new List<CapabilityStatement.ResourceComponent>();
+
+        var capabilities = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement));
+
+        if (capabilities != null)
+        {
+            if (string.IsNullOrWhiteSpace(_searchText))
+            {
+                filtered.AddRange(capabilities.Rest[0].Resource);
+            }
+            else
+            {
+                foreach (var cap in capabilities.Rest[0].Resource)
+                {
+                    if (cap.Type.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        filtered.Add(cap);
+                    }
+                }
+            }
+        }
+
+        Components = filtered;
     }
 }

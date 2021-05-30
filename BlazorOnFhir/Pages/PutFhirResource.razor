@@ -1,0 +1,55 @@
+﻿@page "/{FhirResourceType}/{FhirResourceId}/Update/"
+@inject FHIRProxy.FHIRClient FhirClient
+@inject FhirJsonSerializer Serializer
+@inject IMemoryCache Cache
+@inject FhirJsonExampleService FhirExampleService
+
+<h3>Update @FhirResourceType</h3>
+
+<div class="form-group">
+    <label class="form-text">Edit your json</label>
+    <textarea class="input-group-text" @bind="json"></textarea>
+    <button class="btn btn-primary" @onclick="async () => await CreateFromJson()">Update</button>
+</div>
+
+@if (responseJson != null)
+{
+    <h4>Server response</h4>
+    <div class="text">
+        <pre>
+            @responseJson
+        </pre>
+    </div>
+}
+
+<a href="/@FhirResourceType">Resource page</a>
+
+@code {
+    [Parameter]
+    public string FhirResourceType { get; set; }
+
+    [Parameter]
+    public string FhirResourceId { get; set; }
+
+    public string json { get; set; }
+
+    public string responseJson { get; set; }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var response = await FhirClient.LoadResource($"{FhirResourceType}/{FhirResourceId}");
+
+        json = response.Content.ToString();
+    }
+
+    public async System.Threading.Tasks.Task CreateFromJson()
+    {
+        var headers = new Microsoft.AspNetCore.Http.HeaderDictionary();
+
+        headers.Add("Content-Type", "application/json");
+
+        var response = await FhirClient.SaveResource(FhirResourceType, json, "PUT", headers);
+
+        responseJson = response.Content.ToString();
+    }
+}

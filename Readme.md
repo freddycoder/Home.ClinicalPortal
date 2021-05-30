@@ -9,8 +9,51 @@ My implementation of some HL7v3 soap services, educational purpose.
 - message-builder-dotnet
 - Azure API for FHIR
 - Hl7.Fhir.R4
+- Docker
 
-## Setup the environment
+## Setup the environment on your local machine
+
+To setup the environment on your local machine, you will need to download to other repos beside the current repo.
+
+```
+git clone https://github.com/microsoft/fhir-server-samples.git
+git clone https://github.com/microsoft/health-architectures.git
+```
+
+After, you will need to create a TestData folder inside the current repo and run this command inside it :
+
+```
+docker run --rm -v ${PWD}/output:/output --name synthea-docker intersystemsdc/irisdemo-base-synthea:version-1.3.4 -p 25
+```
+
+Then at the root directory of the current repo, execute 
+
+```
+docker-compose up
+```
+
+Wait a little, and in the docker desktop app, you will see that the api has stoped. Just restart it, there is a sync problem at the start and the api try to connect to the database too soon.
+
+Then inside the FhirImporter folder, run :
+
+> You can ajuste the paralelism parameter in the FhirImporter/Properties/launchSettings.json file
+
+```
+dotnet restore
+dotnet run
+```
+
+Once it is done, launch the BlazorOnFhir app to look at the data.
+
+```
+cd ..\BlazorOnFhir
+dotnet restore
+dotnet run
+```
+
+Watch the demo video : https://youtu.be/SXPkaujXius
+
+## Setup the environment on azure
 
 Duration somewhere between 30 minutes and 2 hours. 
 Required an azure subscription and docker installed on your computer.
