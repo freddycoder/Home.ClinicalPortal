@@ -14,3 +14,8 @@ npm install -g artillery@latest
 artillery dino
 ```
 
+## Run the test
+
+```
+artillery run .\load-test.yml
+```
