@@ -1,0 +1,32 @@
+config:
+  target: "http://localhost:49156"
+  phases:
+    - durantion: 1
+      arrivalRate: 1
+    # - duration: 60
+    #   arrivalRate: 5
+    #   name: Warm up
+    # - duration: 120
+    #   arrivalRate: 5
+    #   rampTo: 50
+    #   name: Ramp up load
+    # - duration: 600
+    #   arrivalRate: 50
+    #   name: Sustained load
+  payload:
+    path: "requests.csv"
+    delimiter: "~"
+    options:
+        quote: ''
+    fields:
+      - "request"
+  defaults:
+    headers:
+      Content-Type: "application/xml"
+      SOAPAction: '"http://tempuri.org/IPatientRegistry/FindCandidates"'
+scenarios:
+  - name: "FindCandidate"
+    flow:
+      - post:
+          url: "/Registry/PatientRegistry.svc"
+          body: '{{ request }}'

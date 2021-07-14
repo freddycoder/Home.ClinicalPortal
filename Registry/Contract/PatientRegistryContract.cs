@@ -77,6 +77,10 @@ namespace Registry.Contract
             {
                fhirPatient = fjp.Parse<Hl7.Fhir.Model.Patient>(bundle.Entry[1].Children.ElementAt(1).ToJson());
             }
+            else if (bundle.Entry.Count == 1)
+            {
+                fhirPatient = (Hl7.Fhir.Model.Patient)bundle.Entry[0].Resource;
+            }
 
             var response = HL7Builder.Build<FindCandidatesResponse>();
 

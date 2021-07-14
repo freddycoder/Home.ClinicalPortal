@@ -8,6 +8,9 @@ using System.ServiceModel;
 using Home.ClinicalPortal.Model.Registry;
 using FHIRProxy;
 using System;
+using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Registry
 {
@@ -30,6 +33,27 @@ namespace Registry
 		public void Configure(IApplicationBuilder app)
 		{
 			app.UseDeveloperExceptionPage();
+
+			app.Use(async (context, next) =>
+			{
+				context.Request.EnableBuffering();
+
+				using (var reader = new StreamReader(
+								context.Request.Body,
+								encoding: Encoding.UTF8,
+								detectEncodingFromByteOrderMarks: false,
+								bufferSize: 30 * 1024,
+								leaveOpen: true))
+				{
+					var body = await reader.ReadToEndAsync();
+					// Do some processing with body…
+
+					// Reset the request body stream position so the next middleware can read it
+					context.Request.Body.Position = 0;
+				}
+
+				await next();
+			});
 
 			app.UseRouting();
 

@@ -18,6 +18,7 @@ using Home.ClinicalPortal;
 using Home.ClinicalPortal.Model.Registry;
 using Home.ClinicalPortal.Model.Laboratory;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace NetCoreConsoleApp
 {
@@ -29,7 +30,7 @@ namespace NetCoreConsoleApp
         }
 
         static string RegistryProtocol = "http";
-        static int RegistryPort = 49154;
+        static int RegistryPort = 49156;
 
         static async Task HomeClinicalPortal()
         {
@@ -175,10 +176,34 @@ namespace NetCoreConsoleApp
             var endpoint = new EndpointAddress(new Uri($"{RegistryProtocol}://localhost:{RegistryPort}/Registry/PatientRegistry.svc"));
             var channelFactory = new ChannelFactory<IPatientRegistry>(binding, endpoint);
             var serviceClient = channelFactory.CreateChannel();
-            var reponseString = await serviceClient.FindCandidates(HL7Serializer.Serialize(RenderMode.PERMISSIVE, version, findCandidateQuery));
+            var requestXml = HL7Serializer.Serialize(RenderMode.PERMISSIVE, version, findCandidateQuery);
+            //SaveRequest(@"C:\Users\Frédéric\source\repos\MyHL7\Artillery\requests.csv", requestXml);
+            var reponseString = await serviceClient.FindCandidates(requestXml);
             Console.WriteLine(reponseString);
             var findCandidateResponse = HL7Serializer.Deserialize<FindCandidatesResponse>(RenderMode.PERMISSIVE, version, reponseString);
             Console.WriteLine(findCandidateResponse.ToString());
+        }
+
+        private static void SaveRequest(string path, string requestXml)
+        {
+            const string template =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">
+    <s:Header />
+    <s:Body>
+        <FindCandidates xmlns=""http://tempuri.org/""> 
+            <request>
+                <![CDATA[
+                    {0}
+                ]]>
+            </request>  
+        </FindCandidates>  
+    </s:Body>
+</s:Envelope>";
+
+            var soaptxt = string.Format(template, requestXml).Replace("\n", "").Replace("\r", "");
+
+            File.WriteAllText(path, soaptxt);
         }
 
         private static string AskLastName()

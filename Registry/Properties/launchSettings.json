@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "FHIR_API_URL": "https://freddycoder.azurehealthcareapis.com",
+        "FHIR_API_URL": "http://localhost:8080",
         "FHIR_BEARER_TOKEN": ""
       },
       "applicationUrl": "http://localhost:5050,https://localhost:5051"
@@ -15,8 +15,8 @@
       "publishAllPorts": true,
       "useSSL": false,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "FHIR_API_URL": "https://freddycoder.azurehealthcareapis.com",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "FHIR_API_URL": "http://host.docker.internal:8080",
         "FHIR_BEARER_TOKEN": ""
       }
     }
