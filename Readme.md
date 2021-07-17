@@ -93,6 +93,17 @@ To interact with the soap services. The client app is in Home.ClinicalPortal.Cli
 docker build -t registry:local -f .\Registry\Dockerfile .
 ```
 
+## Nugetise the proxy librairy
+
+```
+cd ..\health-architectures\FHIR\FHIRProxy\FHIRProxy
+dotnet restore
+dotnet build -c Release
+dotnet pack -c Release -o ..\Packages
+```
+
+And the package upload packages via the upload packages of nuget.org
+
 ### Implementation reference
 
 Registry : 
