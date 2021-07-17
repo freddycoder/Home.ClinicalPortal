@@ -30,7 +30,7 @@ namespace NetCoreConsoleApp
         }
 
         static string RegistryProtocol = "http";
-        static int RegistryPort = 49156;
+        static int RegistryPort = 41558;
 
         static async Task HomeClinicalPortal()
         {

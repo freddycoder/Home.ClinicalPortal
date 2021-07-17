@@ -87,6 +87,12 @@ The app will read the environment variable called ```FHIR_API_URL``` as the url 
 
 To interact with the soap services. The client app is in Home.ClinicalPortal.Client folder.
 
+## Build Registry images
+
+```
+docker build -t registry:local -f .\Registry\Dockerfile .
+```
+
 ### Implementation reference
 
 Registry : 

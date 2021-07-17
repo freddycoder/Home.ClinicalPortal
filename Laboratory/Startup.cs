@@ -1,8 +1,6 @@
 using Home.ClinicalPortal.Model.Laboratory;
 using Laboratory.Contract;
-using Laboratory.Data;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SoapCore;
@@ -17,10 +15,6 @@ namespace Laboratory
 			services.TryAddSingleton<ILaboratory, LaboratoryContract>();
 			services.AddMvc(x => x.EnableEndpointRouting = false);
 			services.AddSoapCore();
-			services.AddDbContext<LaboratoryDbContext>(o =>
-			{
-				o.UseInMemoryDatabase("FindCandidateInMemory");
-			});
 		}
 
 		public void Configure(IApplicationBuilder app)

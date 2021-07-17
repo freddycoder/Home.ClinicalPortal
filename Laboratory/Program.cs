@@ -1,7 +1,4 @@
-using Laboratory;
-using Laboratory.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO;
@@ -22,12 +19,6 @@ namespace Laboratory
 					x.AddConsole();
 				})
 				.Build();
-
-			var db = host.Services.GetRequiredService<LaboratoryDbContext>();
-
-			db.Patients.Add(new ResultEntity { });
-
-			db.SaveChanges();
 
 			host.Run();
 		}

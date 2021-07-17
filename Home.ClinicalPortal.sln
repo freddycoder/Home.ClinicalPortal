@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.ClinicalPortal.Model",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Laboratory", "Laboratory\Laboratory.csproj", "{39210B05-085A-4487-855A-0DE3CE24275C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FHIRProxy", "..\health-architectures\FHIR\FHIRProxy\FHIRProxy\FHIRProxy.csproj", "{0706048C-2450-4CCC-9A80-1E31A40F5347}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorOnFhir", "BlazorOnFhir\BlazorOnFhir.csproj", "{523874D8-9D84-43DF-ACE7-8CD7CC15D734}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FhirImporter", "FhirImporter\FhirImporter.csproj", "{59BA7DB4-F9BB-4889-AD26-B52988F2F61B}"
@@ -39,10 +37,6 @@ Global
 		{39210B05-085A-4487-855A-0DE3CE24275C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39210B05-085A-4487-855A-0DE3CE24275C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39210B05-085A-4487-855A-0DE3CE24275C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0706048C-2450-4CCC-9A80-1E31A40F5347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0706048C-2450-4CCC-9A80-1E31A40F5347}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0706048C-2450-4CCC-9A80-1E31A40F5347}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0706048C-2450-4CCC-9A80-1E31A40F5347}.Release|Any CPU.Build.0 = Release|Any CPU
 		{523874D8-9D84-43DF-ACE7-8CD7CC15D734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{523874D8-9D84-43DF-ACE7-8CD7CC15D734}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{523874D8-9D84-43DF-ACE7-8CD7CC15D734}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FHIRProxy" Version="1.0.1" />
     <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-alpha" />
     <PackageReference Include="Freddycoder.Ca.Infoway.Message.Builder.Ccda.R1_1" Version="1.0.0-alpha" />
     <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-alpha" />
@@ -28,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\health-architectures\FHIR\FHIRProxy\FHIRProxy\FHIRProxy.csproj" />
     <ProjectReference Include="..\Home.ClinicalPortal.Model\Home.ClinicalPortal.Model.csproj" />
   </ItemGroup>
 

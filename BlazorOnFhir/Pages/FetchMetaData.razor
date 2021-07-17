@@ -50,7 +50,7 @@ else
 
     private List<CapabilityStatement.ResourceComponent> Components;
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Components = Cache.Get<CapabilityStatement>(nameof(CapabilityStatement)).Rest[0].Resource;
     }
