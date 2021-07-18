@@ -4,6 +4,8 @@
 @inject IMemoryCache Cache
 @inject FhirJsonExampleService FhirExampleService
 
+@attribute [Authorize]
+
 <h3>Create @FhirResourceType</h3>
 
 <a href="http://hl7.org/fhir/R4/@FhirResourceType-examples.html" target="_blank">HL7 Fhir examples</a>

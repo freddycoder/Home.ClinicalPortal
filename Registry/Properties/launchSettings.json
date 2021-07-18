@@ -3,11 +3,11 @@
     "Registry": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "FHIR_API_URL": "http://localhost:8080",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com/",
         "FHIR_BEARER_TOKEN": ""
       },
-      "applicationUrl": "http://localhost:5050,https://localhost:5051"
+      "applicationUrl": "http://localhost:5050;https://localhost:5051"
     },
     "Docker Registry": {
       "commandName": "Docker",

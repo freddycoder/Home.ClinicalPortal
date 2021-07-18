@@ -1,0 +1,38 @@
+﻿@inject NavigationManager Navigation
+@inject AuthUrlPagesProvider AuthUrlProvider
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        if (AuthenticationStateTask == default)
+        {
+            throw new InvalidProgramException($"{nameof(AuthenticationStateTask)} cannot be null");
+        }
+
+        var authenticationState = await AuthenticationStateTask;
+
+        if (authenticationState?.User?.Identity is null || !authenticationState.User.Identity.IsAuthenticated)
+        {
+            var returnUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                if (AuthUrlProvider.Schema == "Identity.Application")
+                {
+                    Navigation.NavigateTo($"{AuthUrlProvider.LoginPage}?returnUrl=/", true);
+                }
+                else
+                {
+                    Navigation.NavigateTo(AuthUrlProvider.LoginPage, true);
+                }
+            }
+            else
+            {
+                Navigation.NavigateTo($"{AuthUrlProvider.LoginPage}?returnUrl={returnUrl}", true);
+            }
+        }
+    }
+}

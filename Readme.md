@@ -87,6 +87,13 @@ The app will read the environment variable called ```FHIR_API_URL``` as the url 
 
 To interact with the soap services. The client app is in Home.ClinicalPortal.Client folder.
 
+## Build and run BlazorOnFhir images
+
+```
+docker build -t blazoronfhir:local -f .\BlazorOnFhir\Dockerfile .
+docker run -d -p 41560:80 -e ASPNETCORE_ENVIRONMENT=Production -e FHIR_API_URL=http://host.docker.internal:8080 blazoronfhir:local
+```
+
 ## Build and run Registry images
 
 ```

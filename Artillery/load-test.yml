@@ -1,18 +1,42 @@
 config:
-  target: "http://localhost:49156"
-  phases:
-    - durantion: 1
-      arrivalRate: 1
-    # - duration: 60
-    #   arrivalRate: 5
-    #   name: Warm up
-    # - duration: 120
-    #   arrivalRate: 5
-    #   rampTo: 50
-    #   name: Ramp up load
-    # - duration: 600
-    #   arrivalRate: 50
-    #   name: Sustained load
+  environments:
+    debug:
+      target: "http://localhost:5050"
+      ensure:
+        maxErrorRate: 1
+      phases:
+        - duration: 60
+          arrivalRate: 2
+          name: moderate and sustained load
+        - duration: 60
+          arrivalRate: 10
+          name: heavy load
+    local:
+      target: "http://localhost:41558"
+      ensure:
+        maxErrorRate: 1
+      phases:
+        - duration: 60
+          arrivalRate: 2
+          name: moderate and sustained load
+        - duration: 60
+          arrivalRate: 10
+          name: heavy load
+    prod:
+      target: "https://freddycoder.com/fhir-api"
+      ensure:
+        maxErrorRate: 1
+      phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 5
+          rampTo: 50
+          name: Ramp up load
+        - duration: 600
+          arrivalRate: 50
+          name: Sustained load
   payload:
     path: "requests.csv"
     delimiter: "~"

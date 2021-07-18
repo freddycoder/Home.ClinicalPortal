@@ -101,7 +101,54 @@ namespace NetCoreConsoleApp
 
         private static void MenuOption()
         {
-            throw new NotImplementedException();
+            int choice;
+            do
+            {
+                Console.WriteLine("##########################################");
+                Console.WriteLine("#            Home.ClinicalProtal         #");
+                Console.WriteLine("##########################################");
+                Console.WriteLine("#                                        #");
+                Console.WriteLine("# 1.   Change Registry port              #");
+                Console.WriteLine("# 0.   Back to main menu                 #");
+                Console.WriteLine("#                                        #");
+                Console.Write("# Your choice : ");
+
+                try
+                {
+                    choice = int.Parse(Console.ReadLine());
+
+                    switch (choice)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            ChangeRegistryPort();
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                }
+                catch (Exception e)
+                {
+                    do
+                    {
+                        Console.Error.WriteLine(e.Message);
+                        Console.Error.WriteLine(e.StackTrace);
+                        Console.Error.WriteLine();
+
+                        e = e.InnerException;
+                    } while (e != null);
+
+                    choice = -1;
+                }
+
+            } while (choice != 0);
+        }
+
+        private static void ChangeRegistryPort()
+        {
+            Console.WriteLine("Please enter the registry port : ");
+            RegistryPort = int.Parse(Console.ReadLine());
         }
 
         private static async Task FindCandidateScenario()

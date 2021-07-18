@@ -1,12 +1,21 @@
 using System;
 using Blazored.Modal;
+using BlazorOnFhir.Authentication;
+using BlazorOnFhir.Data;
+using BlazorOnFhir.Extensions;
 using BlazorOnFhir.Services;
 using Ganss.XSS;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web.UI;
 
 namespace BlazorOnFhir
 {
@@ -23,9 +32,24 @@ namespace BlazorOnFhir
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddForwardedHeaders(Configuration);
+
+            var mvcBuilder = services.AddRazorPages();
+            if (AddAuthenticationExtension.IsAzureADAuth(Configuration))
+            {
+                mvcBuilder.AddMvcOptions(options =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                                  .RequireAuthenticatedUser()
+                                  .Build();
+                    options.Filters.Add(new AuthorizeFilter(policy));
+                }).AddMicrosoftIdentityUI();
+            }
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
+
+            services.AddBlazorOnFhirAutorisation(Configuration);
+
             services.AddSingleton(new Hl7.Fhir.Serialization.FhirJsonParser());
             services.AddSingleton(new Hl7.Fhir.Serialization.FhirJsonSerializer(new Hl7.Fhir.Serialization.SerializerSettings
             {
@@ -33,11 +57,21 @@ namespace BlazorOnFhir
             }));
             services.AddSingleton(new HttpClientConfig
             {
-                Url = Environment.GetEnvironmentVariable("FHIR_API_URL")
+                Url = Environment.GetEnvironmentVariable("FHIR_API_URL"),
+                BearerToken = Environment.GetEnvironmentVariable("FHIR_BEARER_TOKEN"),
+                ClientId = Environment.GetEnvironmentVariable("CLIENT_ID"),
+                TenantId = Environment.GetEnvironmentVariable("TENENT_ID"),
+                Resource = Environment.GetEnvironmentVariable("FHIR_API_URL"),
+                ClientSecret = Environment.GetEnvironmentVariable("FHIR_CLIENT_CREDENTIAL")
             });
             services.AddScoped(sp =>
             {
                 var c = sp.GetRequiredService<HttpClientConfig>();
+
+                if (c.UseClientCredentials)
+                {
+                    return new FHIRProxy.FHIRClient(c.Url, c.Resource, c.TenantId, c.ClientId, c.ClientSecret);
+                }
 
                 return new FHIRProxy.FHIRClient(c.Url, c.BearerToken);
             });
@@ -47,16 +81,38 @@ namespace BlazorOnFhir
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
+            if ((!string.Equals(("USE_STARTUP_MIGRATION"), bool.FalseString, StringComparison.OrdinalIgnoreCase)) &&
+                   string.Equals(("USE_IDENTITY"), bool.TrueString, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var database = serviceProvider.GetRequiredService<BlazorOnFhirContext>();
+
+                    database.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    logger.LogCritical(e, "An error occure during the migration of the database. The app will be able to start.");
+
+                    throw;
+                }
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseForwardedHeadersRules(logger, Configuration);
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+
+                app.UseForwardedHeadersRules(logger, Configuration);
+
                 app.UseHsts();
             }
 
@@ -65,8 +121,12 @@ namespace BlazorOnFhir
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

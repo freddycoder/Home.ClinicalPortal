@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>d3e0e7cc-959e-4b69-8b16-cbf617e1e830</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,15 +17,15 @@
 
   <ItemGroup>
     <PackageReference Include="FHIRProxy" Version="1.0.1" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-alpha" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-beta" />
     <PackageReference Include="Hl7.Fhir.R4" Version="3.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
-    <PackageReference Include="SoapCore" Version="1.1.0.9" />
+    <PackageReference Include="SoapCore" Version="1.1.0.10" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 

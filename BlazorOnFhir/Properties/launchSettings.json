@@ -3,10 +3,20 @@
     "BlazorOnFhir": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/metadata",
+      "launchUrl": "metadata",
       "environmentVariables": {
-        "FHIR_API_URL": "http://localhost:8080",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+
+        // Azure AD audience among:
+        // - "TenantId" as a GUID obtained from the Azure portal to sign in users in your organization
+        // - "organizations" to sign in users in any work or school account
+        // - "common" to sign in users with any work or school account or Microsoft personal account
+        // - "consumers" to sign in users with a Microsoft personal account only
+        //"AzureAD:TenantId": "<tenant-id>",
+
+        // Client ID (application ID) obtained from the Azure portal
+        //"AzureAD:ClientId": "<client-id>"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"

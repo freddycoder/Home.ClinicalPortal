@@ -3,8 +3,8 @@
     "FhirImporter": {
       "commandName": "Project",
       "environmentVariables": {
-        "FhirServerUrl": "http://localhost:8080",
-        "MaxDegreeOfParallelism": "8"
+        "FhirServerUrl": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com/",
+        "MaxDegreeOfParallelism": "6"
       }
     }
   }

@@ -1,4 +1,5 @@
 ﻿@inject IMemoryCache Cache
+@inject AuthUrlPagesProvider AuthUrlProvider
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorOnFhir</a>
@@ -9,37 +10,49 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="metadata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Metadata
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <div class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" @bind="SearchText" @bind:event="oninput">
-            </div>
-        </li>
-        @foreach (var action in ActionFiltered.Take(8))
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="@action.Type">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> @action.Type
-                </NavLink>
-            </li>
-        }
-        @if (ActionFiltered.Count > 8)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="#">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> ...
-                </NavLink>
-            </li>
-        }
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="metadata">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Metadata
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <div class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" @bind="SearchText" @bind:event="oninput">
+                    </div>
+                </li>
+                @foreach (var action in ActionFiltered.Take(8))
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="@action.Type">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> @action.Type
+                        </NavLink>
+                    </li>
+                }
+                @if (ActionFiltered.Count > 8)
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="#">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> ...
+                        </NavLink>
+                    </li>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink clasa="nav-link" href="@AuthUrlProvider.LoginPage">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Log in
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </ul>
 </div>
 

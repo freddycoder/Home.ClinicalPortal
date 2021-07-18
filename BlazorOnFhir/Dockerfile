@@ -10,7 +10,6 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["BlazorOnFhir/BlazorOnFhir.csproj", "BlazorOnFhir/"]
-COPY ["../health-architectures/FHIR/FHIRProxy/FHIRProxy/FHIRProxy.csproj", "../health-architectures/FHIR/FHIRProxy/FHIRProxy/"]
 RUN dotnet restore "BlazorOnFhir/BlazorOnFhir.csproj"
 COPY . .
 WORKDIR "/src/BlazorOnFhir"

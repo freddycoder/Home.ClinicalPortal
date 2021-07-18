@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Freddycoder.Ca.Infoway.Compatibility" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.R02_04_03" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-alpha" />
-    <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-alpha" />
-    <PackageReference Include="SoapCore" Version="1.1.0.9" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Compatibility" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Core" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.R02_04_03" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Util" Version="1.0.0-beta" />
+    <PackageReference Include="Freddycoder.Ca.Infoway.Xml" Version="1.0.0-beta" />
+    <PackageReference Include="SoapCore" Version="1.1.0.10" />
   </ItemGroup>
   
 </Project>

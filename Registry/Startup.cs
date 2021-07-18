@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Registry.Contract;
@@ -24,36 +23,40 @@ namespace Registry
 			services.AddScoped(sp => new FHIRClient(baseurl: Environment.GetEnvironmentVariable("FHIR_API_URL"),
 													bearerToken: Environment.GetEnvironmentVariable("FHIR_BEARER_TOKEN")));
 			//services.AddScoped(sp => new FHIRClient(baseurl: Environment.GetEnvironmentVariable("FHIR_API_URL"),
-			//									    tenent: Environment.GetEnvironmentVariable("TENENT_ID"),
-			//										clientid: Environment.GetEnvironmentVariable("CLIENT_ID"),
-			//										resource: Environment.GetEnvironmentVariable("FHIR_API_URL"),
-			//										secret: Environment.GetEnvironmentVariable("FHIR_CLIENT_CREDENTIAL")));
+			//									      tenent: Environment.GetEnvironmentVariable("TENENT_ID"),
+			//										  clientid: Environment.GetEnvironmentVariable("CLIENT_ID"),
+			//										  resource: Environment.GetEnvironmentVariable("FHIR_API_URL"),
+			//										  secret: Environment.GetEnvironmentVariable("FHIR_CLIENT_CREDENTIAL")));
+			services.AddSingleton(new Hl7.Fhir.Serialization.FhirJsonParser());
 		}
 
 		public void Configure(IApplicationBuilder app)
 		{
 			app.UseDeveloperExceptionPage();
 
-			app.Use(async (context, next) =>
-			{
-				context.Request.EnableBuffering();
-
-				using (var reader = new StreamReader(
-								context.Request.Body,
-								encoding: Encoding.UTF8,
-								detectEncodingFromByteOrderMarks: false,
-								bufferSize: 30 * 1024,
-								leaveOpen: true))
+			if (string.Equals(Environment.GetEnvironmentVariable("DEBUG_REQUEST_BODY"), bool.TrueString, StringComparison.OrdinalIgnoreCase))
+            {
+				app.Use(async (context, next) =>
 				{
-					var body = await reader.ReadToEndAsync();
-					// Do some processing with body…
+					context.Request.EnableBuffering();
 
-					// Reset the request body stream position so the next middleware can read it
-					context.Request.Body.Position = 0;
-				}
+					using (var reader = new StreamReader(
+									context.Request.Body,
+									encoding: Encoding.UTF8,
+									detectEncodingFromByteOrderMarks: false,
+									bufferSize: 30 * 1024,
+									leaveOpen: true))
+					{
+						var body = await reader.ReadToEndAsync();
+						// Do some processing with body…
 
-				await next();
-			});
+						// Reset the request body stream position so the next middleware can read it
+						context.Request.Body.Position = 0;
+					}
+
+					await next();
+				});
+			}
 
 			app.UseRouting();
 

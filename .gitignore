@@ -254,3 +254,4 @@ paket-files/
 
 # Custom
 TestData/
+BlazorOnFhir/BlazorOnFhir.db

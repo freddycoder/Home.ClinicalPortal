@@ -1,6 +1,7 @@
 ﻿@page "/{FhirResourceType}/{FhirResourceId}"
 @inject FHIRProxy.FHIRClient FhirClient
 @inject FhirJsonParser Parser
+@attribute [Authorize]
 
 <h3>@FhirResourceType @FhirResourceId</h3>
 

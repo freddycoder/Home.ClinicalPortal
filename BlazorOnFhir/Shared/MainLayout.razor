@@ -1,4 +1,6 @@
 @inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthUrlPagesProvider AuthUrlProvider
 
 <div class="page">
     <div class="sidebar">
@@ -7,7 +9,20 @@
 
     <div class="main">
         <div class="top-row px-4">
-            <a href="https://github.com/freddycoder/Home.ClinicalPortal" target="_blank">About</a>
+            <AuthorizeView>
+                <Authorized>
+                    <span>Welcome @context?.User?.Identity?.Name</span>
+
+                    @if (AuthUrlProvider.AuthenticationEnabled)
+                    {
+                        <form action="@AuthUrlProvider.LogoutPage" method="post">
+                            <button class="nav-link btn btn-link" type="submit">
+                                <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
+                            </button>
+                        </form>
+                    }
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <div class="content px-4">
@@ -15,3 +30,21 @@
         </div>
     </div>
 </div>
+
+@code {
+    public ClaimsPrincipal? ClaimsPrincipal { get; set; }
+
+    protected override async System.Threading.Tasks.Task OnParametersSetAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        ClaimsPrincipal = authState.User;
+    }
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

@@ -3,7 +3,8 @@
 @inject FhirJsonParser Parser
 @inject HtmlSanitizer HtmlSanitizer
 @inject IMemoryCache Cache
-@inject ILogger<FhirResource> Logger 
+@inject ILogger<FhirResource> Logger
+@attribute [Authorize]
 
 <div class="row">
     <div class="col-md-6">
@@ -25,18 +26,20 @@
             {
                 <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
             }
-            else {
+            else
+            {
                 <button class="btn btn-secondary m-3" disabled>Previous</button>
             }
             @if (Next != null)
             {
                 <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
             }
-            else {
+            else
+            {
                 <button class="btn btn-secondary m-3" disabled>Next</button>
             }
         </div>
-       
+
     </div>
 
     @if (Bundle?.Type == Bundle.BundleType.Searchset)
@@ -64,42 +67,42 @@
 
 @if (Bundle?.Type == Bundle.BundleType.Searchset)
 {
-<div class="row">
-    <table class="table table-striped table-hover table-responsive-md">
-        <thead>
-            <tr>
-                <th>Json</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var entry in Bundle.Entry)
-            {
+    <div class="row">
+        <table class="table table-striped table-hover table-responsive-md">
+            <thead>
                 <tr>
-                    <td>
-                        <pre class="text">
+                    <th>Json</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Bundle.Entry)
+                {
+                    <tr>
+                        <td>
+                            <pre class="text">
                                 @entry.Resource.ToJson(FhirJsonSettings)
                             </pre>
-                    </td>
-                    <td>
-                        <a href="/@FhirResourceType/@entry.Resource.Id" class="btn btn-secondary">Details</a>
-                        <a href="/@FhirResourceType/@entry.Resource.Id/Update" class="btn btn-outline-warning">Update</a>
-                    </td>
-                </tr>
-            }
+                        </td>
+                        <td>
+                            <a href="/@FhirResourceType/@entry.Resource.Id" class="btn btn-secondary">Details</a>
+                            <a href="/@FhirResourceType/@entry.Resource.Id/Update" class="btn btn-outline-warning">Update</a>
+                        </td>
+                    </tr>
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    @if (Previous != null && Previous.Any())
-    {
-        <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
-    }
-    @if (Next != null)
-    {
-        <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
-    }
-</div>
+        @if (Previous != null && Previous.Any())
+        {
+            <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
+        }
+        @if (Next != null)
+        {
+            <button @onclick="async () => await Refresh(Next)" class="btn btn-secondary m-3">Next</button>
+        }
+    </div>
 }
 else
 {

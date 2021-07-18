@@ -23,11 +23,13 @@ namespace Registry.Contract
 {
 	public class PatientRegistryContract : IPatientRegistry
 	{
-        private readonly FHIRClient context;
+        private readonly FHIRClient _context;
+        private readonly FhirJsonParser _parser;
 
-        public PatientRegistryContract(FHIRClient context)
+        public PatientRegistryContract(FHIRClient context, FhirJsonParser parser)
         {
-            this.context = context;
+            _context = context;
+            _parser = parser;
         }
 
         public string AddPatient(string request)
@@ -40,7 +42,7 @@ namespace Registry.Contract
             throw new NotImplementedException();
         }
 
-        public async Task<string>FindCandidates(string request)
+        public async Task<string> FindCandidates(string request)
         {
             // the HL7v3 version to target
             SpecificationVersion version = SpecificationVersion.R02_04_03;
@@ -59,25 +61,22 @@ namespace Registry.Contract
                 {
                     query += $"&gender={ToFhirGender(parameterList.AdministrativeGenderValue.CodeValue)}";
                 }
-                if (parameterList.PersonBirthtimeValue != null)
+                if (parameterList?.PersonBirthtimeValue != null)
                 {
-                    query += $"&birthdate={((DateTime)parameterList.PersonBirthtimeValue).ToString("yyyy-MM-dd")}";
+                    query += $"&birthdate={(DateTime)parameterList.PersonBirthtimeValue:yyyy-MM-dd}";
                 }
             }
 
-            var dbResponse = await context.LoadResource("Patient", query);
+            var dbResponse = await _context.LoadResource("Patient", query);
 
-            Console.WriteLine(dbResponse);
+            Hl7.Fhir.Model.Bundle bundle = _parser.Parse<Hl7.Fhir.Model.Bundle>(dbResponse.Content.ToString());
 
-            FhirJsonParser fjp = new FhirJsonParser();
-            Hl7.Fhir.Model.Bundle bundle = fjp.Parse<Hl7.Fhir.Model.Bundle>(dbResponse.Content.ToString());
-
-            Hl7.Fhir.Model.Patient fhirPatient = default;
+            Hl7.Fhir.Model.Patient? fhirPatient = default;
             if (bundle.Entry != null && bundle.Entry.Count >= 2)
             {
-               fhirPatient = fjp.Parse<Hl7.Fhir.Model.Patient>(bundle.Entry[1].Children.ElementAt(1).ToJson());
+                fhirPatient = _parser.Parse<Hl7.Fhir.Model.Patient>(bundle.Entry[1].Children.ElementAt(1).ToJson());
             }
-            else if (bundle.Entry.Count == 1)
+            else if (bundle.Entry?.Count == 1)
             {
                 fhirPatient = (Hl7.Fhir.Model.Patient)bundle.Entry[0].Resource;
             }
@@ -132,7 +131,7 @@ namespace Registry.Contract
                 // alternative way to create a code object via direct lookup
                 Ca.Infoway.Messagebuilder.Domainvalue.AdministrativeGender codeLookup =
                     CodeResolverRegistry.Lookup<AdministrativeGender>(
-                    fhirPatient.Gender.Value.ToString(), CodeSystem.VOCABULARY_ADMINISTRATIVE_GENDER.Root);
+                    fhirPatient.Gender?.ToString(), CodeSystem.VOCABULARY_ADMINISTRATIVE_GENDER.Root);
                 
                 parameterList.AdministrativeGenderValue = codeLookup;
             }
