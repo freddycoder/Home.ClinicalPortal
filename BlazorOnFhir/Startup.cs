@@ -1,7 +1,6 @@
 using System;
 using Blazored.Modal;
 using BlazorOnFhir.Authentication;
-using BlazorOnFhir.Data;
 using BlazorOnFhir.Extensions;
 using BlazorOnFhir.Services;
 using Ganss.XSS;
@@ -33,7 +32,7 @@ namespace BlazorOnFhir
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddForwardedHeaders(Configuration);
-
+            
             var mvcBuilder = services.AddRazorPages();
             if (AddAuthenticationExtension.IsAzureADAuth(Configuration))
             {
@@ -45,6 +44,7 @@ namespace BlazorOnFhir
                     options.Filters.Add(new AuthorizeFilter(policy));
                 }).AddMicrosoftIdentityUI();
             }
+            services.AddControllers();
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
 
@@ -83,23 +83,6 @@ namespace BlazorOnFhir
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
-            if ((!string.Equals(("USE_STARTUP_MIGRATION"), bool.FalseString, StringComparison.OrdinalIgnoreCase)) &&
-                   string.Equals(("USE_IDENTITY"), bool.TrueString, StringComparison.OrdinalIgnoreCase))
-            {
-                try
-                {
-                    var database = serviceProvider.GetRequiredService<BlazorOnFhirContext>();
-
-                    database.Database.Migrate();
-                }
-                catch (Exception e)
-                {
-                    logger.LogCritical(e, "An error occure during the migration of the database. The app will be able to start.");
-
-                    throw;
-                }
-            }
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -117,6 +100,7 @@ namespace BlazorOnFhir
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();

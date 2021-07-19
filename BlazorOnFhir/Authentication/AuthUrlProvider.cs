@@ -25,7 +25,7 @@
         /// </summary>
         public string LoginPage => Schema switch
         {
-            "AzureAD" => "/Logout",
+            "AzureAD" => "/AzureAD/Login",
             _ => "",
         };
 
@@ -34,7 +34,7 @@
         /// </summary>
         public string LogoutPage => Schema switch
         {
-            "AzureAD" => "/identity/account/logout",
+            "AzureAD" => "/AzureAD/Logout",
             _ => "",
         };
 
