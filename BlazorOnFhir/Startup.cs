@@ -90,7 +90,15 @@ namespace BlazorOnFhir
 
             if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("StartsWithSegments")) == false)
             {
-                app.UsePathBase(Environment.GetEnvironmentVariable("StartsWithSegments"));
+                app.Use((context, next) =>
+                {
+                    if (context.Request.Path.StartsWithSegments(Environment.GetEnvironmentVariable("StartsWithSegments"), out var remainder))
+                    {
+                        context.Request.Path = remainder;
+                    }
+
+                    return next();
+                });
             }
 
             if (env.IsDevelopment())
