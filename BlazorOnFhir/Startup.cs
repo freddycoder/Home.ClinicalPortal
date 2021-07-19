@@ -32,6 +32,8 @@ namespace BlazorOnFhir
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddForwardedHeaders(Configuration);
+
+            services.AddSingleton(new UrlService(Environment.GetEnvironmentVariable("UsePathBase")));
             
             var mvcBuilder = services.AddRazorPages();
             if (AddAuthenticationExtension.IsAzureADAuth(Configuration))

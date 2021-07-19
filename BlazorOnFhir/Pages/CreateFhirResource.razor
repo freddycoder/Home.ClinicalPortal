@@ -3,6 +3,7 @@
 @inject FhirJsonSerializer Serializer
 @inject IMemoryCache Cache
 @inject FhirJsonExampleService FhirExampleService
+@inject UrlService UrlService
 
 @attribute [Authorize]
 
@@ -26,7 +27,7 @@
     </div>
 }
 
-<a href="/@FhirResourceType">Resource page</a>
+<a href="@UrlService.Url($"/{FhirResourceType}")">Resource page</a>
 
 @code {
     [Parameter]

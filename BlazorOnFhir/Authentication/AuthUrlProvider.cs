@@ -1,4 +1,6 @@
-﻿namespace BlazorOnFhir.Authentication
+﻿using BlazorOnFhir.Services;
+
+namespace BlazorOnFhir.Authentication
 {
     /// <summary>
     /// Provider allow to get information about the authentication method used in the app
@@ -6,13 +8,16 @@
     /// </summary>
     public class AuthUrlPagesProvider
     {
+        private readonly UrlService _urlService;
+
         /// <summary>
         /// Constructor with the authentication shema used
         /// </summary>
         /// <param name="schema">Cookies, Identity.Application, AzureAD, or string.Empty</param>
-        public AuthUrlPagesProvider(string schema)
+        public AuthUrlPagesProvider(string schema, UrlService urlService)
         {
             Schema = schema;
+            _urlService = urlService;
         }
 
         /// <summary>
@@ -25,8 +30,8 @@
         /// </summary>
         public string LoginPage => Schema switch
         {
-            "AzureAD" => "/AzureAD/Login",
-            _ => "",
+            "AzureAD" => _urlService.Url("/AzureAD/Login"),
+            _ => _urlService.Url(""),
         };
 
         /// <summary>
@@ -34,8 +39,8 @@
         /// </summary>
         public string LogoutPage => Schema switch
         {
-            "AzureAD" => "/AzureAD/Logout",
-            _ => "",
+            "AzureAD" => _urlService.Url("/AzureAD/Logout"),
+            _ => _urlService.Url(""),
         };
 
         /// <summary>

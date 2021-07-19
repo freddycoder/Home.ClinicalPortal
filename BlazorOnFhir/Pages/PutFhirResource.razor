@@ -3,6 +3,7 @@
 @inject FhirJsonSerializer Serializer
 @inject IMemoryCache Cache
 @inject FhirJsonExampleService FhirExampleService
+@inject UrlService UrlService
 @attribute [Authorize]
 
 <h3>Update @FhirResourceType</h3>
@@ -23,18 +24,18 @@
     </div>
 }
 
-<a href="/@FhirResourceType">Resource page</a>
+<a href="@UrlService.Url($"/{FhirResourceType}")">Resource page</a>
 
 @code {
     [Parameter]
-    public string FhirResourceType { get; set; }
+    public string? FhirResourceType { get; set; }
 
     [Parameter]
-    public string FhirResourceId { get; set; }
+    public string? FhirResourceId { get; set; }
 
-    public string json { get; set; }
+    public string? json { get; set; }
 
-    public string responseJson { get; set; }
+    public string? responseJson { get; set; }
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {

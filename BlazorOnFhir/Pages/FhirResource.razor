@@ -4,6 +4,7 @@
 @inject HtmlSanitizer HtmlSanitizer
 @inject IMemoryCache Cache
 @inject ILogger<FhirResource> Logger
+@inject UrlService UrlService
 @attribute [Authorize]
 
 <div class="row">
@@ -17,7 +18,7 @@
         @{
             if (CanCreate)
             {
-                <a href="/@FhirResourceType/Create" class="btn btn-primary">Create</a>
+                <a href="@UrlService.Url($"/{FhirResourceType}/Create")" class="btn btn-primary">Create</a>
             }
         }
 
@@ -84,8 +85,8 @@
                             </pre>
                         </td>
                         <td>
-                            <a href="/@FhirResourceType/@entry.Resource.Id" class="btn btn-secondary">Details</a>
-                            <a href="/@FhirResourceType/@entry.Resource.Id/Update" class="btn btn-outline-warning">Update</a>
+                            <a href="@UrlService.Url($"/{FhirResourceType}/{entry.Resource.Id}")" class="btn btn-secondary">Details</a>
+                            <a href="@UrlService.Url($"/{FhirResourceType}/{entry.Resource.Id}/Update")" class="btn btn-outline-warning">Update</a>
                         </td>
                     </tr>
                 }
@@ -112,19 +113,19 @@ else
 
 @code {
     [Parameter]
-    public string FhirResourceType { get; set; }
+    public string? FhirResourceType { get; set; }
 
-    public string json { get; set; }
+    public string? json { get; set; }
 
-    public LinkedList<string> Previous { get; set; }
+    public LinkedList<string>? Previous { get; set; }
 
-    public string Next { get; set; }
+    public string? Next { get; set; }
 
     public bool CanCreate { get; set; }
 
-    public Bundle Bundle { get; set; }
+    public Bundle? Bundle { get; set; }
 
-    public CapabilityStatement.ResourceComponent ResourceComponent { get; set; }
+    public CapabilityStatement.ResourceComponent? ResourceComponent { get; set; }
 
     private FhirJsonSerializationSettings FhirJsonSettings = new FhirJsonSerializationSettings
     {
@@ -192,7 +193,7 @@ else
         }
     }
 
-    public string SearchParam { get; set; }
+    public string? SearchParam { get; set; }
 
     public async System.Threading.Tasks.Task SearchTextFunction()
     {
@@ -210,7 +211,7 @@ else
         TryProcessResponse(response);
     }
 
-    private MarkupString ConvertStringToMarkupString(string value)
+    private MarkupString ConvertStringToMarkupString(string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
