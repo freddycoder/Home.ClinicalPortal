@@ -6,17 +6,17 @@
       "launchUrl": "metadata",
       "environmentVariables": {
         "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com",
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development"
 
         // Azure AD audience among:
         // - "TenantId" as a GUID obtained from the Azure portal to sign in users in your organization
         // - "organizations" to sign in users in any work or school account
         // - "common" to sign in users with any work or school account or Microsoft personal account
         // - "consumers" to sign in users with a Microsoft personal account only
-        "AzureAD:TenantId": "b9bf4857-4ec2-42d7-8151-369ba12c651a",
+        //"AzureAD:TenantId": "<tenant-id>",
 
         // Client ID (application ID) obtained from the Azure portal
-        "AzureAD:ClientId": "30df0c12-5e5a-4422-b62a-3cc1f4c87bb2"
+        //"AzureAD:ClientId": "<client-id>"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"

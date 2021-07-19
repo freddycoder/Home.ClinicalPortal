@@ -83,6 +83,16 @@ namespace BlazorOnFhir
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UsePathBase")) == false)
+            {
+                app.UsePathBase(Environment.GetEnvironmentVariable("UsePathBase"));
+            }
+
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("StartsWithSegments")) == false)
+            {
+                app.UsePathBase(Environment.GetEnvironmentVariable("StartsWithSegments"));
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
