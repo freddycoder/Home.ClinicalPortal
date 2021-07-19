@@ -34,7 +34,7 @@ jobs:
 
       - name: Docker push (dev)
         if: ${{ github.ref != 'refs/heads/main' }}
-        run: docker push $REGISTRY_NAME/$IMAGE_NAME:/IMAGE_DEV_TAG
+        run: docker push $REGISTRY_NAME/$IMAGE_NAME:$IMAGE_DEV_TAG
         
       - name: Docker tag (latest)
         if: ${{ github.ref == 'refs/heads/main' }}
