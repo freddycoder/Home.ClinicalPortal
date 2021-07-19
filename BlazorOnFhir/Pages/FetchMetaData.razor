@@ -106,7 +106,7 @@ else
             {
                 foreach (var cap in capabilities.Rest[0].Resource)
                 {
-                    if (cap.Type.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    if (cap.Type.ToString()?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) == true)
                     {
                         filtered.Add(cap);
                     }

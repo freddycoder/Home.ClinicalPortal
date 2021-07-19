@@ -103,6 +103,16 @@ namespace BlazorOnFhir
                 });
             }
 
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("AddStartSegments")) == false)
+            {
+                app.Use((context, next) =>
+                {
+                    context.Request.Path = $"{Environment.GetEnvironmentVariable("AddStartSegments")}{context.Request.Path}";
+
+                    return next();
+                });
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

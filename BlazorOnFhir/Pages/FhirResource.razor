@@ -25,7 +25,7 @@
         <div style="position: absolute; bottom: 0;">
             @if (Previous != null && Previous.Any())
             {
-                <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
+                <button @onclick="async () => await Refresh(Previous?.Last?.Value)" class="btn btn-secondary m-3">Previous</button>
             }
             else
             {
@@ -144,8 +144,10 @@ else
         await SearchTextFunction();
     }
 
-    private async System.Threading.Tasks.Task Refresh(string urlString)
+    private async System.Threading.Tasks.Task Refresh(string? urlString)
     {
+        if (urlString == null) return;
+
         if (urlString == Next)
         {
             Previous.AddLast(Bundle.Link.First(l => l.Relation == "self").Url);
