@@ -1,8 +1,7 @@
-﻿using BlazorOnFhir.Authentication;
+﻿using BlazorOnFhir.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace BlazorOnFhir.Controllers
@@ -13,6 +12,13 @@ namespace BlazorOnFhir.Controllers
     [Route("[controller]/[action]")]
     public class AzureADController : ControllerBase
     {
+        private readonly UrlService _urlService;
+
+        public AzureADController(UrlService urlService)
+        {
+            _urlService = urlService;
+        }
+
         /// <summary>
         /// Login method to handle Microsoft authentication
         /// </summary>
@@ -22,10 +28,18 @@ namespace BlazorOnFhir.Controllers
         {
             var props = new AuthenticationProperties
             {
-                RedirectUri = returnUrl
+                RedirectUri = returnUrl,
             };
 
             return await Task.Run(() => Challenge(props));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return LocalRedirect(_urlService.Url("/"));
         }
     }
 }

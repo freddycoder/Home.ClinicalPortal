@@ -4,6 +4,7 @@
 @inject HtmlSanitizer HtmlSanitizer
 @inject IMemoryCache Cache
 @inject ILogger<FhirResource> Logger
+@inject UrlService UrlService
 @attribute [Authorize]
 
 <div class="row">
@@ -17,14 +18,14 @@
         @{
             if (CanCreate)
             {
-                <a href="/@FhirResourceType/Create" class="btn btn-primary">Create</a>
+                <a href="@UrlService.Url($"/{FhirResourceType}/Create")" class="btn btn-primary">Create</a>
             }
         }
 
         <div style="position: absolute; bottom: 0;">
             @if (Previous != null && Previous.Any())
             {
-                <button @onclick="async () => await Refresh(Previous.Last.Value)" class="btn btn-secondary m-3">Previous</button>
+                <button @onclick="async () => await Refresh(Previous?.Last?.Value)" class="btn btn-secondary m-3">Previous</button>
             }
             else
             {
@@ -39,7 +40,6 @@
                 <button class="btn btn-secondary m-3" disabled>Next</button>
             }
         </div>
-
     </div>
 
     @if (Bundle?.Type == Bundle.BundleType.Searchset)
@@ -85,8 +85,8 @@
                             </pre>
                         </td>
                         <td>
-                            <a href="/@FhirResourceType/@entry.Resource.Id" class="btn btn-secondary">Details</a>
-                            <a href="/@FhirResourceType/@entry.Resource.Id/Update" class="btn btn-outline-warning">Update</a>
+                            <a href="@UrlService.Url($"/{FhirResourceType}/{entry.Resource.Id}")" class="btn btn-secondary">Details</a>
+                            <a href="@UrlService.Url($"/{FhirResourceType}/{entry.Resource.Id}/Update")" class="btn btn-outline-warning">Update</a>
                         </td>
                     </tr>
                 }
@@ -113,19 +113,19 @@ else
 
 @code {
     [Parameter]
-    public string FhirResourceType { get; set; }
+    public string? FhirResourceType { get; set; }
 
-    public string json { get; set; }
+    public string? json { get; set; }
 
-    public LinkedList<string> Previous { get; set; }
+    public LinkedList<string>? Previous { get; set; }
 
-    public string Next { get; set; }
+    public string? Next { get; set; }
 
     public bool CanCreate { get; set; }
 
-    public Bundle Bundle { get; set; }
+    public Bundle? Bundle { get; set; }
 
-    public CapabilityStatement.ResourceComponent ResourceComponent { get; set; }
+    public CapabilityStatement.ResourceComponent? ResourceComponent { get; set; }
 
     private FhirJsonSerializationSettings FhirJsonSettings = new FhirJsonSerializationSettings
     {
@@ -144,8 +144,10 @@ else
         await SearchTextFunction();
     }
 
-    private async System.Threading.Tasks.Task Refresh(string urlString)
+    private async System.Threading.Tasks.Task Refresh(string? urlString)
     {
+        if (urlString == null) return;
+
         if (urlString == Next)
         {
             Previous.AddLast(Bundle.Link.First(l => l.Relation == "self").Url);
@@ -193,7 +195,7 @@ else
         }
     }
 
-    public string SearchParam { get; set; }
+    public string? SearchParam { get; set; }
 
     public async System.Threading.Tasks.Task SearchTextFunction()
     {
@@ -211,7 +213,7 @@ else
         TryProcessResponse(response);
     }
 
-    private MarkupString ConvertStringToMarkupString(string value)
+    private MarkupString ConvertStringToMarkupString(string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {

@@ -1,6 +1,7 @@
 ﻿@page "/metadata"
 
-@inject IMemoryCache Cache;
+@inject IMemoryCache Cache
+@inject UrlService UrlService
 
 @attribute [Authorize]
 
@@ -34,7 +35,7 @@ else
                 var resource = operation.Type;
 
                 <tr>
-                    <td><a href="/@operation.Type">@operation.Type</a></td>
+                    <td><a href="@UrlService.Url($"/{operation.Type}")">@operation.Type</a></td>
                     <td>@RenderInteractions(operation.Interaction)</td>
                     <td><a href="@operation.Profile">@operation.Profile</a></td>
                     <td>
@@ -105,7 +106,7 @@ else
             {
                 foreach (var cap in capabilities.Rest[0].Resource)
                 {
-                    if (cap.Type.ToString().Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    if (cap.Type.ToString()?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) == true)
                     {
                         filtered.Add(cap);
                     }

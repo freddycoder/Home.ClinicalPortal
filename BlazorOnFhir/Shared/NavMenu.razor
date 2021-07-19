@@ -1,5 +1,6 @@
 ﻿@inject IMemoryCache Cache
 @inject AuthUrlPagesProvider AuthUrlProvider
+@inject UrlService UrlService
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorOnFhir</a>
@@ -13,12 +14,12 @@
         <AuthorizeView>
             <Authorized>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="@UrlService.Url("/")" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Home
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="metadata">
+                    <NavLink class="nav-link" href="@UrlService.Url("/metadata")">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Metadata
                     </NavLink>
                 </li>
@@ -30,7 +31,7 @@
                 @foreach (var action in ActionFiltered.Take(8))
                 {
                     <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="@action.Type">
+                        <NavLink class="nav-link" href="@UrlService.Url($"/{action.Type}")">
                             <span class="oi oi-list-rich" aria-hidden="true"></span> @action.Type
                         </NavLink>
                     </li>
@@ -93,7 +94,7 @@
         }
     }
 
-    public async void DoSearchText()
+    public void DoSearchText()
     {
         var filtered = new List<CapabilityStatement.ResourceComponent>();
 

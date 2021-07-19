@@ -1,0 +1,45 @@
+name: BlazorOnFhir-Image
+
+on:
+  push:
+    paths: BlazorOnFhir/**
+    branches:
+      - main
+  pull_request:
+    paths: BlazorOnFhir/**
+    types: [opened, synchronize, reopened]
+
+env:
+  REGISTRY_NAME: freddycoder
+  IMAGE_NAME: blazoronfhir
+  IMAGE_DEV_TAG: dev
+  IMAGE_TAG: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to dockerhub
+        run: echo ${{ secrets.registryPassword }} | docker login -u ${{ secrets.registryUsername }} --password-stdin
+
+      - name: Docker build
+        run: docker build -t $IMAGE_NAME:$IMAGE_TAG -f BlazorOnFhir/Dockerfile .
+        
+      - name: Docker tag (dev)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: docker tag $IMAGE_NAME:$IMAGE_TAG $REGISTRY_NAME/$IMAGE_NAME:$IMAGE_DEV_TAG
+
+      - name: Docker push (dev)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: docker push $REGISTRY_NAME/$IMAGE_NAME:$IMAGE_DEV_TAG
+        
+      - name: Docker tag (latest)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: docker tag $IMAGE_NAME:$IMAGE_TAG $REGISTRY_NAME/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Docker push (latest)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: docker push $REGISTRY_NAME/$IMAGE_NAME:$IMAGE_TAG

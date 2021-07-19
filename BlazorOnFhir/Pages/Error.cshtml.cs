@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorOnFhir.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -19,9 +20,12 @@ namespace BlazorOnFhir.Pages
 
         private readonly ILogger<ErrorModel> _logger;
 
-        public ErrorModel(ILogger<ErrorModel> logger)
+        public UrlService UrlService { get; }
+
+        public ErrorModel(ILogger<ErrorModel> logger, UrlService urlService)
         {
             _logger = logger;
+            UrlService = urlService;
         }
 
         public void OnGet()

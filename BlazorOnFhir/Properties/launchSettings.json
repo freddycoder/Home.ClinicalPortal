@@ -6,7 +6,7 @@
       "launchUrl": "metadata",
       "environmentVariables": {
         "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com",
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development"
 
         // Azure AD audience among:
         // - "TenantId" as a GUID obtained from the Azure portal to sign in users in your organization

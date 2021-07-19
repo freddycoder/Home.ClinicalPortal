@@ -1,7 +1,6 @@
 using System;
 using Blazored.Modal;
 using BlazorOnFhir.Authentication;
-using BlazorOnFhir.Data;
 using BlazorOnFhir.Extensions;
 using BlazorOnFhir.Services;
 using Ganss.XSS;
@@ -34,6 +33,8 @@ namespace BlazorOnFhir
         {
             services.AddForwardedHeaders(Configuration);
 
+            services.AddSingleton(new UrlService(Environment.GetEnvironmentVariable("UsePathBase")));
+            
             var mvcBuilder = services.AddRazorPages();
             if (AddAuthenticationExtension.IsAzureADAuth(Configuration))
             {
@@ -45,6 +46,7 @@ namespace BlazorOnFhir
                     options.Filters.Add(new AuthorizeFilter(policy));
                 }).AddMicrosoftIdentityUI();
             }
+            services.AddControllers();
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
 
@@ -83,21 +85,32 @@ namespace BlazorOnFhir
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
-            if ((!string.Equals(("USE_STARTUP_MIGRATION"), bool.FalseString, StringComparison.OrdinalIgnoreCase)) &&
-                   string.Equals(("USE_IDENTITY"), bool.TrueString, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UsePathBase")) == false)
             {
-                try
-                {
-                    var database = serviceProvider.GetRequiredService<BlazorOnFhirContext>();
+                app.UsePathBase(Environment.GetEnvironmentVariable("UsePathBase"));
+            }
 
-                    database.Database.Migrate();
-                }
-                catch (Exception e)
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("StartsWithSegments")) == false)
+            {
+                app.Use((context, next) =>
                 {
-                    logger.LogCritical(e, "An error occure during the migration of the database. The app will be able to start.");
+                    if (context.Request.Path.StartsWithSegments(Environment.GetEnvironmentVariable("StartsWithSegments"), out var remainder))
+                    {
+                        context.Request.Path = remainder;
+                    }
 
-                    throw;
-                }
+                    return next();
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("AddStartSegments")) == false)
+            {
+                app.Use((context, next) =>
+                {
+                    context.Request.Path = $"{Environment.GetEnvironmentVariable("AddStartSegments")}{context.Request.Path}";
+
+                    return next();
+                });
             }
 
             if (env.IsDevelopment())
@@ -117,6 +130,7 @@ namespace BlazorOnFhir
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();

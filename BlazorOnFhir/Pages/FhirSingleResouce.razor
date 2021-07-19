@@ -1,11 +1,12 @@
 ﻿@page "/{FhirResourceType}/{FhirResourceId}"
 @inject FHIRProxy.FHIRClient FhirClient
 @inject FhirJsonParser Parser
+@inject UrlService UrlService
 @attribute [Authorize]
 
 <h3>@FhirResourceType @FhirResourceId</h3>
 
-<a href="/@FhirResourceType/@FhirResourceId/Update" class="btn btn-outline-warning m-2">Update</a>
+<a href="@UrlService.Url($"/{FhirResourceType}/{FhirResourceId}/Update")" class="btn btn-outline-warning m-2">Update</a>
 
 <div class="text">
     <pre>
@@ -13,16 +14,16 @@
     </pre>
 </div>
 
-<a href="/@FhirResourceType">Resource page</a>
+<a href="@UrlService.Url($"/{FhirResourceType}")">Resource page</a>
 
 @code {
     [Parameter]
-    public string FhirResourceType { get; set; }
+    public string? FhirResourceType { get; set; }
 
     [Parameter]
-    public string FhirResourceId { get; set; }
+    public string? FhirResourceId { get; set; }
 
-    public string json { get; set; }
+    public string? json { get; set; }
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {

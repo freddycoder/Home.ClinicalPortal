@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BlazorOnFhir.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
@@ -19,7 +21,7 @@ namespace BlazorOnFhir.Authentication
 
             if (IsAzureADAuth(configuration))
             {
-                services.AddSingleton(new AuthUrlPagesProvider("AzureAD"));
+                services.AddSingleton(sp => new AuthUrlPagesProvider("AzureAD", sp.GetRequiredService<UrlService>()));
 
                 // Support for kubernetes
                 // Colon is not allow in environement variable name
@@ -56,7 +58,7 @@ namespace BlazorOnFhir.Authentication
             }
             else
             {
-                services.AddSingleton(new AuthUrlPagesProvider(""));
+                services.AddSingleton(sp => new AuthUrlPagesProvider("", sp.GetRequiredService<UrlService>()));
 
                 services.AddSingleton<IHostEnvironmentAuthenticationStateProvider, AllowAnonymousStateProvider>();
                 services.AddSingleton<IAuthorizationHandler, AllowAnonymousAuthorizationHandler>();
