@@ -5,7 +5,7 @@
       "launchBrowser": true,
       "launchUrl": "metadata",
       "environmentVariables": {
-        "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com",
+        "FHIR_API_URL": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com/api/",
         "ASPNETCORE_ENVIRONMENT": "Development"
 
         // Azure AD audience among:

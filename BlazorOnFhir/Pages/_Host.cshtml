@@ -12,10 +12,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BlazorOnFhir</title>
-    <link rel="stylesheet" href="@Model.UrlService.Url("/css/bootstrap/bootstrap.min.css")" />
-    <link href="@Model.UrlService.Url("/_content/Blazored.Modal/blazored-modal.css")" rel="stylesheet" />
-    <link href="@Model.UrlService.Url("/css/site.css")" rel="stylesheet" />
-    <link href="@Model.UrlService.Url("/BlazorOnFhir.styles.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="@Model.UrlService.Url("/css/bootstrap/bootstrap.min.css")" type="text/css" />
+    <link href="@Model.UrlService.Url("/_content/Blazored.Modal/blazored-modal.css")" rel="stylesheet" type="text/css" />
+    <link href="@Model.UrlService.Url("/css/site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Model.UrlService.Url("/BlazorOnFhir.styles.css")" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />
@@ -31,7 +31,7 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="@Model.UrlService.Url("/_framework/blazor.server.js")"></script>
-    <script src="@Model.UrlService.Url("/_content/Blazored.Modal/blazored.modal.js")"></script>
+    <script src="@Model.UrlService.Url("/_framework/blazor.server.js")" type="text/javascript"></script>
+    <script src="@Model.UrlService.Url("/_content/Blazored.Modal/blazored.modal.js")" type="text/javascript"></script>
 </body>
 </html>

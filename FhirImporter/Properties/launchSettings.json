@@ -3,7 +3,7 @@
     "FhirImporter": {
       "commandName": "Project",
       "environmentVariables": {
-        "FhirServerUrl": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com/",
+        "FhirServerUrl": "https://fhir-aks-api-0717-dns.canadaeast.cloudapp.azure.com/api/",
         "MaxDegreeOfParallelism": "6"
       }
     }
