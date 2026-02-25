@@ -39,14 +39,14 @@ namespace BlazorOnFhir.Extensions
                 {
                     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
-                    options.KnownNetworks.Clear();
+                    options.KnownIPNetworks.Clear();
                     options.KnownProxies.Clear();
 
                     foreach (var network in configuration.GetValue<string>("KNOW_NETWORKS")?.Split(';') ?? Array.Empty<string>())
                     {
                         var ipInfo = network.Split("/");
 
-                        options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse(ipInfo[0]), int.Parse(ipInfo[1])));
+                        options.KnownIPNetworks.Add(new System.Net.IPNetwork(IPAddress.Parse(ipInfo[0]), int.Parse(ipInfo[1])));
                     }
                 });
             }
