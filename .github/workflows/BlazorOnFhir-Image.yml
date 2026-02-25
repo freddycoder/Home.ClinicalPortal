@@ -2,11 +2,13 @@ name: BlazorOnFhir-Image
 
 on:
   push:
-    paths: BlazorOnFhir/**
+    paths:
+      - BlazorOnFhir/**
     branches:
       - main
   pull_request:
-    paths: BlazorOnFhir/**
+    paths:
+      - BlazorOnFhir/**
     types: [opened, synchronize, reopened]
 
 env:
@@ -20,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Login to dockerhub
         run: echo ${{ secrets.registryPassword }} | docker login -u ${{ secrets.registryUsername }} --password-stdin
